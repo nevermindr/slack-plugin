@@ -1,21 +1,21 @@
 package jenkins.plugins.slack;
 
 public class SlackNotifierConfigJob extends SlackNotifierConfigGlobal {
-    private final String sendAs;
-    private final boolean startNotification;
-    private final boolean notifyAborted;
-    private final boolean notifyFailure;
-    private final boolean notifyNotBuilt;
-    private final boolean notifySuccess;
-    private final boolean notifyUnstable;
-    private final boolean notifyRegression;
-    private final boolean notifyBackToNormal;
-    private final boolean notifyRepeatedFailure;
-    private final boolean includeTestSummary;
-    private final boolean includeFailedTests;
-    private final CommitInfoChoice commitInfoChoice;
-    private final boolean includeCustomMessage;
-    private final String customMessage;
+    private String sendAs;
+    private boolean startNotification;
+    private boolean notifyAborted;
+    private boolean notifyFailure;
+    private boolean notifyNotBuilt;
+    private boolean notifySuccess;
+    private boolean notifyUnstable;
+    private boolean notifyRegression;
+    private boolean notifyBackToNormal;
+    private boolean notifyRepeatedFailure;
+    private boolean includeTestSummary;
+    private boolean includeFailedTests;
+    private CommitInfoChoice commitInfoChoice;
+    private boolean includeCustomMessage;
+    private String customMessage;
 
     public SlackNotifierConfigJob(String baseUrl, String teamDomain, String authToken, String authTokenCredentialId, boolean botUser, String room, String sendAs, boolean startNotification, boolean notifyAborted, boolean notifyFailure, boolean notifyNotBuilt, boolean notifySuccess, boolean notifyUnstable, boolean notifyRegression, boolean notifyBackToNormal, boolean notifyRepeatedFailure, boolean includeTestSummary, boolean includeFailedTests, CommitInfoChoice commitInfoChoice, boolean includeCustomMessage, String customMessage) {
         super(baseUrl, teamDomain, authToken, authTokenCredentialId, botUser, room);
@@ -96,5 +96,65 @@ public class SlackNotifierConfigJob extends SlackNotifierConfigGlobal {
 
     public String getCustomMessage() {
         return customMessage;
+    }
+
+    public void setSendAs(String sendAs) {
+        this.sendAs = sendAs;
+    }
+
+    public void setStartNotification(boolean startNotification) {
+        this.startNotification = startNotification;
+    }
+
+    public void setNotifyAborted(boolean notifyAborted) {
+        this.notifyAborted = notifyAborted;
+    }
+
+    public void setNotifyFailure(boolean notifyFailure) {
+        this.notifyFailure = notifyFailure;
+    }
+
+    public void setNotifyNotBuilt(boolean notifyNotBuilt) {
+        this.notifyNotBuilt = notifyNotBuilt;
+    }
+
+    public void setNotifySuccess(boolean notifySuccess) {
+        this.notifySuccess = notifySuccess;
+    }
+
+    public void setNotifyUnstable(boolean notifyUnstable) {
+        this.notifyUnstable = notifyUnstable;
+    }
+
+    public void setNotifyRegression(boolean notifyRegression) {
+        this.notifyRegression = notifyRegression;
+    }
+
+    public void setNotifyBackToNormal(boolean notifyBackToNormal) {
+        this.notifyBackToNormal = notifyBackToNormal;
+    }
+
+    public void setNotifyRepeatedFailure(boolean notifyRepeatedFailure) {
+        this.notifyRepeatedFailure = notifyRepeatedFailure;
+    }
+
+    public void setIncludeTestSummary(boolean includeTestSummary) {
+        this.includeTestSummary = includeTestSummary;
+    }
+
+    public void setIncludeFailedTests(boolean includeFailedTests) {
+        this.includeFailedTests = includeFailedTests;
+    }
+
+    public void setCommitInfoChoice(CommitInfoChoice commitInfoChoice) {
+        this.commitInfoChoice = commitInfoChoice;
+    }
+
+    public void setIncludeCustomMessage(boolean includeCustomMessage) {
+        this.includeCustomMessage = includeCustomMessage;
+    }
+
+    public void setCustomMessage(String customMessage) {
+        this.customMessage = customMessage;
     }
 }
