@@ -8,7 +8,7 @@ public class SlackNotifierStub extends SlackNotifier {
                              boolean notifyRepeatedFailure, boolean includeTestSummary, boolean includeFailedTests, 
                              CommitInfoChoice commitInfoChoice, boolean includeCustomMessage, String customMessage) {
         super(
-                new SlackNotifierConfigJob(baseUrl, teamDomain, authToken, botUser, room, authTokenCredentialId, sendAs, startNotification, notifyAborted, notifyFailure, notifyNotBuilt, notifySuccess, notifyUnstable, notifyRegression, notifyBackToNormal, notifyRepeatedFailure, includeTestSummary, includeFailedTests, commitInfoChoice, includeCustomMessage, customMessage));
+                new SlackNotifierConfigJob(baseUrl, teamDomain, authToken, authTokenCredentialId, botUser, room, sendAs, startNotification, notifyAborted, notifyFailure, notifyNotBuilt, notifySuccess, notifyUnstable, notifyRegression, notifyBackToNormal, notifyRepeatedFailure, includeTestSummary, includeFailedTests, commitInfoChoice, includeCustomMessage, customMessage));
     }
 
     public static class DescriptorImplStub extends SlackNotifier.DescriptorImpl {

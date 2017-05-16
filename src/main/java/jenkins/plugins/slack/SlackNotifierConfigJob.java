@@ -1,12 +1,6 @@
 package jenkins.plugins.slack;
 
-public class SlackNotifierConfigJob {
-    private final String baseUrl;
-    private final String teamDomain;
-    private final String authToken;
-    private final boolean botUser;
-    private final String room;
-    private final String authTokenCredentialId;
+public class SlackNotifierConfigJob extends SlackNotifierConfigGlobal {
     private final String sendAs;
     private final boolean startNotification;
     private final boolean notifyAborted;
@@ -23,13 +17,10 @@ public class SlackNotifierConfigJob {
     private final boolean includeCustomMessage;
     private final String customMessage;
 
-    public SlackNotifierConfigJob(String baseUrl, String teamDomain, String authToken, boolean botUser, String room, String authTokenCredentialId, String sendAs, boolean startNotification, boolean notifyAborted, boolean notifyFailure, boolean notifyNotBuilt, boolean notifySuccess, boolean notifyUnstable, boolean notifyRegression, boolean notifyBackToNormal, boolean notifyRepeatedFailure, boolean includeTestSummary, boolean includeFailedTests, CommitInfoChoice commitInfoChoice, boolean includeCustomMessage, String customMessage) {
-        this.baseUrl = baseUrl;
-        this.teamDomain = teamDomain;
-        this.authToken = authToken;
-        this.botUser = botUser;
-        this.room = room;
-        this.authTokenCredentialId = authTokenCredentialId;
+    public SlackNotifierConfigJob(String baseUrl, String teamDomain, String authToken, String authTokenCredentialId, boolean botUser, String room, String sendAs, boolean startNotification, boolean notifyAborted, boolean notifyFailure, boolean notifyNotBuilt, boolean notifySuccess, boolean notifyUnstable, boolean notifyRegression, boolean notifyBackToNormal, boolean notifyRepeatedFailure, boolean includeTestSummary, boolean includeFailedTests, CommitInfoChoice commitInfoChoice, boolean includeCustomMessage, String customMessage) {
+        super(baseUrl, teamDomain, authToken, authTokenCredentialId, botUser, room);
+
+
         this.sendAs = sendAs;
         this.startNotification = startNotification;
         this.notifyAborted = notifyAborted;
@@ -45,30 +36,6 @@ public class SlackNotifierConfigJob {
         this.commitInfoChoice = commitInfoChoice;
         this.includeCustomMessage = includeCustomMessage;
         this.customMessage = customMessage;
-    }
-
-    public String getBaseUrl() {
-        return baseUrl;
-    }
-
-    public String getTeamDomain() {
-        return teamDomain;
-    }
-
-    public String getAuthToken() {
-        return authToken;
-    }
-
-    public boolean isBotUser() {
-        return botUser;
-    }
-
-    public String getRoom() {
-        return room;
-    }
-
-    public String getAuthTokenCredentialId() {
-        return authTokenCredentialId;
     }
 
     public String getSendAs() {

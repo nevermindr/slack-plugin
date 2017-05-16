@@ -3,13 +3,13 @@ package jenkins.plugins.slack;
 import org.apache.commons.lang.StringUtils;
 
 public class SlackNotifierConfigGlobal {
-    private final String baseUrl;
-    private final String teamDomain;
-    private final String token;
-    private final String authTokenCredentialId;
-    private final boolean botUser;
-    private final String roomId;
-    private String[] roomIds;
+    protected final String baseUrl;
+    protected final String teamDomain;
+    protected final String token;
+    protected final String authTokenCredentialId;
+    protected final boolean botUser;
+    protected final String roomId;
+    protected String[] roomIds;
 
     public SlackNotifierConfigGlobal(String baseUrl, String teamDomain, String token, String authTokenCredentialId, boolean botUser, String roomId) {
 
