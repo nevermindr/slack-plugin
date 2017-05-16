@@ -252,36 +252,32 @@ public class SlackNotifier extends Notifier {
         super();
     }
 
-    public SlackNotifier(final String baseUrl, final String teamDomain, final String authToken, final boolean botUser, final String room, final String authTokenCredentialId,
-                         final String sendAs, final boolean startNotification, final boolean notifyAborted, final boolean notifyFailure,
-                         final boolean notifyNotBuilt, final boolean notifySuccess, final boolean notifyUnstable, final boolean notifyRegression, final boolean notifyBackToNormal,
-                         final boolean notifyRepeatedFailure, final boolean includeTestSummary, final boolean includeFailedTests,
-                         CommitInfoChoice commitInfoChoice, boolean includeCustomMessage, String customMessage) {
+    public SlackNotifier(SlackNotifierConfigJob slackNotifierConfigJob) {
         super();
-        this.baseUrl = baseUrl;
+        this.baseUrl = slackNotifierConfigJob.getBaseUrl();
         if(this.baseUrl != null && !this.baseUrl.isEmpty() && !this.baseUrl.endsWith("/")) {
             this.baseUrl += "/";
         }
-        this.teamDomain = teamDomain;
-        this.authToken = authToken;
-        this.authTokenCredentialId = StringUtils.trim(authTokenCredentialId);
-        this.botUser = botUser;
-        this.room = room;
-        this.sendAs = sendAs;
-        this.startNotification = startNotification;
-        this.notifyAborted = notifyAborted;
-        this.notifyFailure = notifyFailure;
-        this.notifyNotBuilt = notifyNotBuilt;
-        this.notifySuccess = notifySuccess;
-        this.notifyUnstable = notifyUnstable;
-        this.notifyRegression = notifyRegression;
-        this.notifyBackToNormal = notifyBackToNormal;
-        this.notifyRepeatedFailure = notifyRepeatedFailure;
-        this.includeTestSummary = includeTestSummary;
-        this.includeFailedTests = includeFailedTests;
-        this.commitInfoChoice = commitInfoChoice;
-        this.includeCustomMessage = includeCustomMessage;
-        this.customMessage = customMessage;
+        this.teamDomain = slackNotifierConfigJob.getTeamDomain();
+        this.authToken = slackNotifierConfigJob.getAuthToken();
+        this.authTokenCredentialId = StringUtils.trim(slackNotifierConfigJob.getAuthTokenCredentialId());
+        this.botUser = slackNotifierConfigJob.isBotUser();
+        this.room = slackNotifierConfigJob.getRoom();
+        this.sendAs = slackNotifierConfigJob.getSendAs();
+        this.startNotification = slackNotifierConfigJob.isStartNotification();
+        this.notifyAborted = slackNotifierConfigJob.isNotifyAborted();
+        this.notifyFailure = slackNotifierConfigJob.isNotifyFailure();
+        this.notifyNotBuilt = slackNotifierConfigJob.isNotifyNotBuilt();
+        this.notifySuccess = slackNotifierConfigJob.isNotifySuccess();
+        this.notifyUnstable = slackNotifierConfigJob.isNotifyUnstable();
+        this.notifyRegression = slackNotifierConfigJob.isNotifyRegression();
+        this.notifyBackToNormal = slackNotifierConfigJob.isNotifyBackToNormal();
+        this.notifyRepeatedFailure = slackNotifierConfigJob.isNotifyRepeatedFailure();
+        this.includeTestSummary = slackNotifierConfigJob.isIncludeTestSummary();
+        this.includeFailedTests = slackNotifierConfigJob.isIncludeFailedTests();
+        this.commitInfoChoice = slackNotifierConfigJob.getCommitInfoChoice();
+        this.includeCustomMessage = slackNotifierConfigJob.isIncludeCustomMessage();
+        this.customMessage = slackNotifierConfigJob.getCustomMessage();
     }
 
     public BuildStepMonitor getRequiredMonitorService() {
@@ -438,9 +434,8 @@ public class SlackNotifier extends Notifier {
             CommitInfoChoice commitInfoChoice = CommitInfoChoice.forDisplayName(sr.getParameter("slackCommitInfoChoice"));
             boolean includeCustomMessage = "on".equals(sr.getParameter("includeCustomMessage"));
             String customMessage = sr.getParameter("customMessage");
-            return new SlackNotifier(baseUrl, teamDomain, token, botUser, room, tokenCredentialId, sendAs, startNotification, notifyAborted,
-                    notifyFailure, notifyNotBuilt, notifySuccess, notifyUnstable, notifyRegression, notifyBackToNormal, notifyRepeatedFailure,
-                    includeTestSummary, includeFailedTests, commitInfoChoice, includeCustomMessage, customMessage);
+            return new SlackNotifier(
+                    new SlackNotifierConfigJob(baseUrl, teamDomain, token, botUser, room, tokenCredentialId, sendAs, startNotification, notifyAborted, notifyFailure, notifyNotBuilt, notifySuccess, notifyUnstable, notifyRegression, notifyBackToNormal, notifyRepeatedFailure, includeTestSummary, includeFailedTests, commitInfoChoice, includeCustomMessage, customMessage));
         }
 
         @Override
