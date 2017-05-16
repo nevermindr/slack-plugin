@@ -1,5 +1,7 @@
 package jenkins.plugins.slack;
 
+import org.apache.commons.lang.StringUtils;
+
 public class SlackNotifierConfigGlobal {
     private final String baseUrl;
     private final String teamDomain;
@@ -10,10 +12,15 @@ public class SlackNotifierConfigGlobal {
     private String[] roomIds;
 
     public SlackNotifierConfigGlobal(String baseUrl, String teamDomain, String token, String authTokenCredentialId, boolean botUser, String roomId) {
+
+        if(baseUrl != null && !baseUrl.isEmpty() && !baseUrl.endsWith("/")) {
+            baseUrl += "/";
+        }
+
         this.baseUrl = baseUrl;
         this.teamDomain = teamDomain;
         this.token = token;
-        this.authTokenCredentialId = authTokenCredentialId;
+        this.authTokenCredentialId = StringUtils.trim(authTokenCredentialId);
         this.botUser = botUser;
         this.roomId = roomId;
         this.roomIds = roomId.split("[,; ]+");

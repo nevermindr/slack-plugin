@@ -47,27 +47,12 @@ public class StandardSlackService implements SlackService {
     private static final Logger logger = Logger.getLogger(StandardSlackService.class.getName());
 
     private String host = "slack.com";
-    private String baseUrl;
-    private String teamDomain;
-    private String token;
-    private String authTokenCredentialId;
-    private boolean botUser;
-    private String[] roomIds;
+
     private SlackNotifierConfigGlobal slackNotifierConfigGlobal;
 
     public StandardSlackService(SlackNotifierConfigGlobal _slackNotifierConfigGlobal) {
         super();
         this.slackNotifierConfigGlobal = _slackNotifierConfigGlobal;
-
-        this.baseUrl = this.slackNotifierConfigGlobal.getBaseUrl();
-        if(this.baseUrl != null && !this.baseUrl.isEmpty() && !this.baseUrl.endsWith("/")) {
-            this.baseUrl += "/";
-        }
-        this.teamDomain = this.slackNotifierConfigGlobal.getTeamDomain();
-        this.token = this.slackNotifierConfigGlobal.getToken();
-        this.authTokenCredentialId = StringUtils.trim(this.slackNotifierConfigGlobal.getAuthTokenCredentialId());
-        this.botUser = this.slackNotifierConfigGlobal.isBotUser();
-        this.roomIds = this.slackNotifierConfigGlobal.getRoomIds();
     }
 
     public boolean publish(String message) {
@@ -75,6 +60,11 @@ public class StandardSlackService implements SlackService {
     }
 
     public boolean publish(String message, String color) {
+        String teamDomain = this.slackNotifierConfigGlobal.getTeamDomain();
+        boolean botUser = this.slackNotifierConfigGlobal.isBotUser();
+        String[] roomIds = this.slackNotifierConfigGlobal.getRoomIds();
+        String baseUrl = this.slackNotifierConfigGlobal.getBaseUrl();
+
         boolean result = true;
         for (String roomId : roomIds) {
             //prepare attachments first
@@ -148,6 +138,9 @@ public class StandardSlackService implements SlackService {
     }
 
     private String getTokenToUse() {
+        String authTokenCredentialId = this.slackNotifierConfigGlobal.getAuthTokenCredentialId();
+        String token = this.slackNotifierConfigGlobal.getToken();
+
         if (authTokenCredentialId != null && !authTokenCredentialId.isEmpty()) {
             StringCredentials credentials = lookupCredentials(authTokenCredentialId);
             if (credentials != null) {
