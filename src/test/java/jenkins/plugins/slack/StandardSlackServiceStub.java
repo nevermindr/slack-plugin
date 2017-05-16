@@ -5,7 +5,7 @@ public class StandardSlackServiceStub extends StandardSlackService {
     private CloseableHttpClientStub httpClientStub;
 
     public StandardSlackServiceStub(String baseUrl, String teamDomain, String token, String tokenCredentialId, boolean botUser, String roomId) {
-        super(baseUrl, teamDomain, token, tokenCredentialId, botUser, roomId);
+        super(new SlackNotifierConfigGlobal(baseUrl, teamDomain, token, tokenCredentialId, botUser, roomId));
     }
 
     @Override

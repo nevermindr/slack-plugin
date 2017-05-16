@@ -12,7 +12,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
-import java.io.InputStream;
 import java.net.URLEncoder;
 import java.util.Collections;
 import java.util.List;
@@ -55,17 +54,17 @@ public class StandardSlackService implements SlackService {
     private boolean botUser;
     private String[] roomIds;
 
-    public StandardSlackService(String baseUrl, String teamDomain, String token, String authTokenCredentialId, boolean botUser, String roomId) {
+    public StandardSlackService(SlackNotifierConfigGlobal slackNotifierConfigGlobal) {
         super();
-        this.baseUrl = baseUrl;
+        this.baseUrl = slackNotifierConfigGlobal.getBaseUrl();
         if(this.baseUrl != null && !this.baseUrl.isEmpty() && !this.baseUrl.endsWith("/")) {
             this.baseUrl += "/";
         }
-        this.teamDomain = teamDomain;
-        this.token = token;
-        this.authTokenCredentialId = StringUtils.trim(authTokenCredentialId);
-        this.botUser = botUser;
-        this.roomIds = roomId.split("[,; ]+");
+        this.teamDomain = slackNotifierConfigGlobal.getTeamDomain();
+        this.token = slackNotifierConfigGlobal.getToken();
+        this.authTokenCredentialId = StringUtils.trim(slackNotifierConfigGlobal.getAuthTokenCredentialId());
+        this.botUser = slackNotifierConfigGlobal.isBotUser();
+        this.roomIds = slackNotifierConfigGlobal.getRoomId().split("[,; ]+");
     }
 
     public boolean publish(String message) {

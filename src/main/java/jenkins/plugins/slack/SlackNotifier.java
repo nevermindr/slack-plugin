@@ -327,7 +327,7 @@ public class SlackNotifier extends Notifier {
         authTokenCredentialId = env.expand(authTokenCredentialId);
         room = env.expand(room);
 
-        return new StandardSlackService(baseUrl, teamDomain, authToken, authTokenCredentialId, botUser, room);
+        return new StandardSlackService(new SlackNotifierConfigGlobal(baseUrl, teamDomain, authToken, authTokenCredentialId, botUser, room));
     }
 
     @Override
@@ -465,7 +465,7 @@ public class SlackNotifier extends Notifier {
         }
 
         SlackService getSlackService(final String baseUrl, final String teamDomain, final String authToken, final String authTokenCredentialId, final boolean botUser, final String room) {
-            return new StandardSlackService(baseUrl, teamDomain, authToken, authTokenCredentialId, botUser, room);
+            return new StandardSlackService(new SlackNotifierConfigGlobal(baseUrl, teamDomain, authToken, authTokenCredentialId, botUser, room));
         }
 
         @Override
