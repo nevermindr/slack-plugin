@@ -53,18 +53,21 @@ public class StandardSlackService implements SlackService {
     private String authTokenCredentialId;
     private boolean botUser;
     private String[] roomIds;
+    private SlackNotifierConfigGlobal slackNotifierConfigGlobal;
 
-    public StandardSlackService(SlackNotifierConfigGlobal slackNotifierConfigGlobal) {
+    public StandardSlackService(SlackNotifierConfigGlobal _slackNotifierConfigGlobal) {
         super();
-        this.baseUrl = slackNotifierConfigGlobal.getBaseUrl();
+        this.slackNotifierConfigGlobal = _slackNotifierConfigGlobal;
+
+        this.baseUrl = this.slackNotifierConfigGlobal.getBaseUrl();
         if(this.baseUrl != null && !this.baseUrl.isEmpty() && !this.baseUrl.endsWith("/")) {
             this.baseUrl += "/";
         }
-        this.teamDomain = slackNotifierConfigGlobal.getTeamDomain();
-        this.token = slackNotifierConfigGlobal.getToken();
-        this.authTokenCredentialId = StringUtils.trim(slackNotifierConfigGlobal.getAuthTokenCredentialId());
-        this.botUser = slackNotifierConfigGlobal.isBotUser();
-        this.roomIds = slackNotifierConfigGlobal.getRoomId().split("[,; ]+");
+        this.teamDomain = this.slackNotifierConfigGlobal.getTeamDomain();
+        this.token = this.slackNotifierConfigGlobal.getToken();
+        this.authTokenCredentialId = StringUtils.trim(this.slackNotifierConfigGlobal.getAuthTokenCredentialId());
+        this.botUser = this.slackNotifierConfigGlobal.isBotUser();
+        this.roomIds = this.slackNotifierConfigGlobal.getRoomId().split("[,; ]+");
     }
 
     public boolean publish(String message) {
