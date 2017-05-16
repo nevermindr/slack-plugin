@@ -67,7 +67,7 @@ public class StandardSlackService implements SlackService {
         this.token = this.slackNotifierConfigGlobal.getToken();
         this.authTokenCredentialId = StringUtils.trim(this.slackNotifierConfigGlobal.getAuthTokenCredentialId());
         this.botUser = this.slackNotifierConfigGlobal.isBotUser();
-        this.roomIds = this.slackNotifierConfigGlobal.getRoomId().split("[,; ]+");
+        this.roomIds = this.slackNotifierConfigGlobal.getRoomIds();
     }
 
     public boolean publish(String message) {

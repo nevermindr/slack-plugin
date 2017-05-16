@@ -7,6 +7,7 @@ public class SlackNotifierConfigGlobal {
     private final String authTokenCredentialId;
     private final boolean botUser;
     private final String roomId;
+    private String[] roomIds;
 
     public SlackNotifierConfigGlobal(String baseUrl, String teamDomain, String token, String authTokenCredentialId, boolean botUser, String roomId) {
         this.baseUrl = baseUrl;
@@ -15,6 +16,7 @@ public class SlackNotifierConfigGlobal {
         this.authTokenCredentialId = authTokenCredentialId;
         this.botUser = botUser;
         this.roomId = roomId;
+        this.roomIds = roomId.split("[,; ]+");
     }
 
     public String getBaseUrl() {
@@ -39,5 +41,9 @@ public class SlackNotifierConfigGlobal {
 
     public String getRoomId() {
         return roomId;
+    }
+
+    public String[] getRoomIds() {
+        return roomIds;
     }
 }
