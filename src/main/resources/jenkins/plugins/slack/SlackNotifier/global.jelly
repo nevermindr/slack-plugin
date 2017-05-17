@@ -13,22 +13,22 @@
   -->
 <f:section title="Global Slack Notifier Settings" name="slack">
     <f:entry title="Base URL" help="/plugin/slack/help-projectConfig-slackBaseUrl.html">
-        <f:textbox field="baseUrl" name="slackBaseUrl" value="${descriptor.getBaseUrl()}"/>
+        <f:textbox field="baseUrl" name="slackBaseUrl" value="${descriptor.getSlackNotifierConfigGlobal().getBaseUrl()}"/>
     </f:entry>
     <f:entry title="Team Subdomain" help="/plugin/slack/help-globalConfig-slackTeamDomain.html">
-        <f:textbox field="teamDomain" name="slackTeamDomain" value="${descriptor.getTeamDomain()}" />
+        <f:textbox field="teamDomain" name="slackTeamDomain" value="${descriptor.getSlackNotifierConfigGlobal().getTeamDomain()}" />
     </f:entry>
     <f:entry title="Integration Token" help="/plugin/slack/help-globalConfig-slackToken.html">
-        <f:textbox field="token" name="slackToken" value="${descriptor.getToken()}" />
+        <f:textbox field="token" name="slackToken" value="${descriptor.getSlackNotifierConfigGlobal().getToken()}" />
     </f:entry>
     <f:entry title="Integration Token Credential ID" field="tokenCredentialId" name="tokenCredentialId" help="/plugin/slack/help-globalConfig-tokenCredentialId.html">
         <c:select/>
     </f:entry>
     <f:entry title="Is Bot User?" help="/plugin/slack/help-globalConfig-botUser.html">
-        <f:checkbox field="botUser" name="slackBotUser" value="true" checked="${descriptor.getBotUser()}" />
+        <f:checkbox field="botUser" name="slackBotUser" value="true" checked="${descriptor.getSlackNotifierConfigGlobal().getBotUser()}" />
     </f:entry>
     <f:entry title="Channel" help="/plugin/slack/help-globalConfig-slackRoom.html">
-        <f:textbox field="room" name="slackRoom" value="${descriptor.getRoom()}" />
+        <f:textbox field="room" name="slackRoom" value="${descriptor.getSlackNotifierConfigGlobal().getRoom()}" />
     </f:entry>
     <f:validateButton
         title="${%Test Connection}" progress="${%Testing...}"
