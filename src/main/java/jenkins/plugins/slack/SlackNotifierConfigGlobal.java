@@ -23,6 +23,7 @@ public class SlackNotifierConfigGlobal {
 
     @XStreamOmitField
     protected String[] roomIds;
+    protected String sendAs;
 
     public String getAuthToken() {
         return token;
@@ -45,6 +46,10 @@ public class SlackNotifierConfigGlobal {
     }
 
     public SlackNotifierConfigGlobal(String baseUrl, String teamDomain, String token, String tokenCredentialId, boolean botUser, String room) {
+        this(baseUrl, teamDomain, token, tokenCredentialId, botUser, room, "");
+    }
+
+    public SlackNotifierConfigGlobal(String baseUrl, String teamDomain, String token, String tokenCredentialId, boolean botUser, String room, String sendAs) {
 
         if(baseUrl != null && !baseUrl.isEmpty() && !baseUrl.endsWith("/")) {
             baseUrl += "/";
@@ -57,6 +62,7 @@ public class SlackNotifierConfigGlobal {
         this.botUser = botUser;
         this.room = room;
         this.roomIds = room.split("[,; ]+");
+        this.sendAs = sendAs;
     }
 
     public String getBaseUrl() {
@@ -105,6 +111,14 @@ public class SlackNotifierConfigGlobal {
 
     public void setBuildServerUrl(String buildServerUrl) {
         this.buildServerUrl = buildServerUrl;
+    }
+
+    public String getSendAs() {
+        return sendAs;
+    }
+
+    public void setSendAs(String sendAs) {
+        this.sendAs = sendAs;
     }
 
     public static class SlackNotifierConfigGlobalConverter extends ReflectionConverter {

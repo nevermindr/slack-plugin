@@ -10,7 +10,6 @@ import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.mapper.Mapper;
 
 public class SlackNotifierConfigJob extends SlackNotifierConfigGlobal {
-    private String sendAs;
     private boolean startNotification;
     private boolean notifyAborted;
     private boolean notifyFailure;
@@ -39,10 +38,9 @@ public class SlackNotifierConfigJob extends SlackNotifierConfigGlobal {
     }
 
     public SlackNotifierConfigJob(String baseUrl, String teamDomain, String authToken, String authTokenCredentialId, boolean botUser, String room, String sendAs, boolean startNotification, boolean notifyAborted, boolean notifyFailure, boolean notifyNotBuilt, boolean notifySuccess, boolean notifyUnstable, boolean notifyRegression, boolean notifyBackToNormal, boolean notifyRepeatedFailure, boolean includeTestSummary, boolean includeFailedTests, CommitInfoChoice commitInfoChoice, boolean includeCustomMessage, String customMessage) {
-        super(baseUrl, teamDomain, authToken, authTokenCredentialId, botUser, room);
+        super(baseUrl, teamDomain, authToken, authTokenCredentialId, botUser, room, sendAs);
 
 
-        this.sendAs = sendAs;
         this.startNotification = startNotification;
         this.notifyAborted = notifyAborted;
         this.notifyFailure = notifyFailure;
@@ -73,10 +71,6 @@ public class SlackNotifierConfigJob extends SlackNotifierConfigGlobal {
 
     public void setAuthTokenCredentialId(String authTokenCredentialId) {
         this.authTokenCredentialId = authTokenCredentialId;
-    }
-
-    public String getSendAs() {
-        return sendAs;
     }
 
     public boolean isStartNotification() {
@@ -133,10 +127,6 @@ public class SlackNotifierConfigJob extends SlackNotifierConfigGlobal {
 
     public String getCustomMessage() {
         return customMessage;
-    }
-
-    public void setSendAs(String sendAs) {
-        this.sendAs = sendAs;
     }
 
     public void setStartNotification(boolean startNotification) {

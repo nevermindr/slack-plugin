@@ -294,7 +294,7 @@ public class SlackNotifier extends Notifier {
         authTokenCredentialId = env.expand(authTokenCredentialId);
         room = env.expand(room);
 
-        return new StandardSlackService(new SlackNotifierConfigGlobal(baseUrl, teamDomain, authToken, authTokenCredentialId, botUser, room));
+        return new StandardSlackService(new SlackNotifierConfigGlobal(baseUrl, teamDomain, authToken, authTokenCredentialId, botUser, room, ""));
     }
 
     @Override
@@ -321,7 +321,6 @@ public class SlackNotifier extends Notifier {
     @XStreamConverter(SlackNotifierConfigGlobal.SlackNotifierConfigGlobalConverter.class)
     public static class DescriptorImpl extends BuildStepDescriptor<Publisher> {
 
-        private String sendAs;
         private SlackNotifierConfigGlobal slackNotifierConfigGlobal;
 
         public SlackNotifierConfigGlobal getSlackNotifierConfigGlobal() {
@@ -363,7 +362,7 @@ public class SlackNotifier extends Notifier {
         }
 
         public String getSendAs() {
-            return sendAs;
+            return slackNotifierConfigGlobal!=null?slackNotifierConfigGlobal.getSendAs():null;
         }
 
         public ListBoxModel doFillTokenCredentialIdItems() {
@@ -415,8 +414,9 @@ public class SlackNotifier extends Notifier {
             CommitInfoChoice commitInfoChoice = CommitInfoChoice.forDisplayName(sr.getParameter("slackCommitInfoChoice"));
             boolean includeCustomMessage = "on".equals(sr.getParameter("includeCustomMessage"));
             String customMessage = sr.getParameter("customMessage");
+
             return new SlackNotifier(
-                    new SlackNotifierConfigJob(baseUrl, teamDomain, token, tokenCredentialId, botUser, room, sendAs, startNotification, notifyAborted, notifyFailure, notifyNotBuilt, notifySuccess, notifyUnstable, notifyRegression, notifyBackToNormal, notifyRepeatedFailure, includeTestSummary, includeFailedTests, commitInfoChoice, includeCustomMessage, customMessage));
+                    new SlackNotifierConfigJob(baseUrl, teamDomain, token, tokenCredentialId, botUser, room, this.slackNotifierConfigGlobal.getSendAs(), startNotification, notifyAborted, notifyFailure, notifyNotBuilt, notifySuccess, notifyUnstable, notifyRegression, notifyBackToNormal, notifyRepeatedFailure, includeTestSummary, includeFailedTests, commitInfoChoice, includeCustomMessage, customMessage));
         }
 
         @Override
@@ -429,9 +429,9 @@ public class SlackNotifier extends Notifier {
             boolean botUser = "true".equals(sr.getParameter("slackBotUser"));
             String room = sr.getParameter("slackRoom");
 
-            sendAs = sr.getParameter("slackSendAs");
+            String sendAs = sr.getParameter("slackSendAs");
 
-            slackNotifierConfigGlobal = new SlackNotifierConfigGlobal(baseUrl, teamDomain, token, tokenCredentialId, botUser, room);
+            slackNotifierConfigGlobal = new SlackNotifierConfigGlobal(baseUrl, teamDomain, token, tokenCredentialId, botUser, room, sendAs);
             save();
             return super.configure(sr, formData);
         }
