@@ -57,7 +57,7 @@ public class SlackNotifier extends Notifier {
 
     @Override
     public DescriptorImpl getDescriptor() {
-        return (DescriptorImpl) super.getDescriptor();
+        return (DescriptorImpl)super.getDescriptor();
     }
 
     public String getBaseUrl() {
@@ -316,11 +316,21 @@ public class SlackNotifier extends Notifier {
         return super.prebuild(build, listener);
     }
 
+
     @Extension
+    @XStreamConverter(SlackNotifierConfigGlobal.SlackNotifierConfigGlobalConverter.class)
     public static class DescriptorImpl extends BuildStepDescriptor<Publisher> {
 
         private String sendAs;
         private SlackNotifierConfigGlobal slackNotifierConfigGlobal;
+
+        public SlackNotifierConfigGlobal getSlackNotifierConfigGlobal() {
+            return slackNotifierConfigGlobal;
+        }
+
+        public void setSlackNotifierConfigGlobal(SlackNotifierConfigGlobal slackNotifierConfigGlobal) {
+            this.slackNotifierConfigGlobal = slackNotifierConfigGlobal;
+        }
 
         public static final CommitInfoChoice[] COMMIT_INFO_CHOICES = CommitInfoChoice.values();
 
