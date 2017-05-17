@@ -139,7 +139,7 @@ public class StandardSlackService implements SlackService {
 
     private String getTokenToUse() {
         String authTokenCredentialId = this.slackNotifierConfigGlobal.getAuthTokenCredentialId();
-        String token = this.slackNotifierConfigGlobal.getToken();
+        String token = this.slackNotifierConfigGlobal.getAuthToken();
 
         if (authTokenCredentialId != null && !authTokenCredentialId.isEmpty()) {
             StringCredentials credentials = lookupCredentials(authTokenCredentialId);

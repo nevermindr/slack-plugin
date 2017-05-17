@@ -5,13 +5,18 @@ import org.apache.commons.lang.StringUtils;
 public class SlackNotifierConfigGlobal {
     protected String baseUrl;
     protected String teamDomain;
-    protected String token;
+    protected String authToken;
     protected String authTokenCredentialId;
     protected boolean botUser;
-    protected String roomId;
+    protected String room;
+    protected String buildServerUrl;
     protected String[] roomIds;
 
-    public SlackNotifierConfigGlobal(String baseUrl, String teamDomain, String token, String authTokenCredentialId, boolean botUser, String roomId) {
+    public SlackNotifierConfigGlobal() {
+
+    }
+
+    public SlackNotifierConfigGlobal(String baseUrl, String teamDomain, String authToken, String authTokenCredentialId, boolean botUser, String room) {
 
         if(baseUrl != null && !baseUrl.isEmpty() && !baseUrl.endsWith("/")) {
             baseUrl += "/";
@@ -19,11 +24,11 @@ public class SlackNotifierConfigGlobal {
 
         this.baseUrl = baseUrl;
         this.teamDomain = teamDomain;
-        this.token = token;
+        this.authToken = authToken;
         this.authTokenCredentialId = StringUtils.trim(authTokenCredentialId);
         this.botUser = botUser;
-        this.roomId = roomId;
-        this.roomIds = roomId.split("[,; ]+");
+        this.room = room;
+        this.roomIds = room.split("[,; ]+");
     }
 
     public String getBaseUrl() {
@@ -34,8 +39,8 @@ public class SlackNotifierConfigGlobal {
         return teamDomain;
     }
 
-    public String getToken() {
-        return token;
+    public String getAuthToken() {
+        return authToken;
     }
 
     public String getAuthTokenCredentialId() {
@@ -46,8 +51,8 @@ public class SlackNotifierConfigGlobal {
         return botUser;
     }
 
-    public String getRoomId() {
-        return roomId;
+    public String getRoom() {
+        return room;
     }
 
     public String[] getRoomIds() {
@@ -62,8 +67,8 @@ public class SlackNotifierConfigGlobal {
         this.teamDomain = teamDomain;
     }
 
-    public void setToken(String token) {
-        this.token = token;
+    public void setAuthToken(String authToken) {
+        this.authToken = authToken;
     }
 
     public void setAuthTokenCredentialId(String authTokenCredentialId) {
@@ -74,11 +79,20 @@ public class SlackNotifierConfigGlobal {
         this.botUser = botUser;
     }
 
-    public void setRoomId(String roomId) {
-        this.roomId = roomId;
+    public void setRoom(String room) {
+        this.room = room;
     }
 
     public void setRoomIds(String[] roomIds) {
         this.roomIds = roomIds;
     }
+
+    public String getBuildServerUrl() {
+        return buildServerUrl;
+    }
+
+    public void setBuildServerUrl(String buildServerUrl) {
+        this.buildServerUrl = buildServerUrl;
+    }
+
 }

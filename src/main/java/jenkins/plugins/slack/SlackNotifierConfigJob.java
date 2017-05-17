@@ -1,5 +1,13 @@
 package jenkins.plugins.slack;
 
+import com.thoughtworks.xstream.converters.MarshallingContext;
+import com.thoughtworks.xstream.converters.UnmarshallingContext;
+import com.thoughtworks.xstream.converters.reflection.ReflectionConverter;
+import com.thoughtworks.xstream.converters.reflection.ReflectionProvider;
+import com.thoughtworks.xstream.io.HierarchicalStreamReader;
+import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import com.thoughtworks.xstream.mapper.Mapper;
+
 public class SlackNotifierConfigJob extends SlackNotifierConfigGlobal {
     private String sendAs;
     private boolean startNotification;
@@ -16,6 +24,10 @@ public class SlackNotifierConfigJob extends SlackNotifierConfigGlobal {
     private CommitInfoChoice commitInfoChoice;
     private boolean includeCustomMessage;
     private String customMessage;
+
+    public SlackNotifierConfigJob() {
+
+    }
 
     public SlackNotifierConfigJob(String baseUrl, String teamDomain, String authToken, String authTokenCredentialId, boolean botUser, String room, String sendAs, boolean startNotification, boolean notifyAborted, boolean notifyFailure, boolean notifyNotBuilt, boolean notifySuccess, boolean notifyUnstable, boolean notifyRegression, boolean notifyBackToNormal, boolean notifyRepeatedFailure, boolean includeTestSummary, boolean includeFailedTests, CommitInfoChoice commitInfoChoice, boolean includeCustomMessage, String customMessage) {
         super(baseUrl, teamDomain, authToken, authTokenCredentialId, botUser, room);
@@ -156,5 +168,35 @@ public class SlackNotifierConfigJob extends SlackNotifierConfigGlobal {
 
     public void setCustomMessage(String customMessage) {
         this.customMessage = customMessage;
+    }
+
+    public static class SlackNotifierConfigJobConverter extends ReflectionConverter {
+        public SlackNotifierConfigJobConverter(Mapper mapper, ReflectionProvider reflectionProvider) {
+            super(mapper, reflectionProvider);
+        }
+
+        protected Object instantiateNewInstance(HierarchicalStreamReader reader, UnmarshallingContext context) {
+            return this.reflectionProvider.newInstance(SlackNotifierConfigJob.class);
+        }
+
+        public void marshal(Object source, HierarchicalStreamWriter writer,
+                            MarshallingContext context) {
+
+            super.marshal(((SlackNotifier)source).getSlackNotifierConfigJob(), writer, context);
+        }
+
+        public Object unmarshal(HierarchicalStreamReader reader,
+                                UnmarshallingContext context) {
+
+            SlackNotifierConfigJob slackNotifierConfigJob = (SlackNotifierConfigJob) super.unmarshal(reader, context);
+
+            SlackNotifier notifier = new SlackNotifier();
+            notifier.setSlackNotifierConfigJob(slackNotifierConfigJob);
+            return notifier;
+        }
+
+        public boolean canConvert(Class type) {
+            return type.equals(SlackNotifier.class);
+        }
     }
 }

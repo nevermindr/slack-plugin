@@ -2,6 +2,7 @@ package jenkins.plugins.slack;
 
 import com.cloudbees.plugins.credentials.common.StandardListBoxModel;
 import com.cloudbees.plugins.credentials.domains.HostnameRequirement;
+import com.thoughtworks.xstream.annotations.XStreamConverter;
 import hudson.EnvVars;
 import hudson.Extension;
 import hudson.Launcher;
@@ -37,32 +38,22 @@ import java.util.logging.Logger;
 
 import static com.cloudbees.plugins.credentials.CredentialsProvider.lookupCredentials;
 
+@XStreamConverter(SlackNotifierConfigJob.SlackNotifierConfigJobConverter.class)
 public class SlackNotifier extends Notifier {
 
     private static final Logger logger = Logger.getLogger(SlackNotifier.class.getName());
 
-    private String baseUrl;
-    private String teamDomain;
-    private String authToken;
-    private String authTokenCredentialId;
-    private boolean botUser;
-    private String room;
-    private String sendAs;
-    private boolean startNotification;
-    private boolean notifySuccess;
-    private boolean notifyAborted;
-    private boolean notifyNotBuilt;
-    private boolean notifyUnstable;
-    private boolean notifyRegression;
-    private boolean notifyFailure;
-    private boolean notifyBackToNormal;
-    private boolean notifyRepeatedFailure;
-    private boolean includeTestSummary;
-    private boolean includeFailedTests;
-    private CommitInfoChoice commitInfoChoice;
-    private boolean includeCustomMessage;
-    private String customMessage;
+
     private SlackNotifierConfigJob slackNotifierConfigJob;
+
+
+    public SlackNotifierConfigJob getSlackNotifierConfigJob() {
+        return slackNotifierConfigJob;
+    }
+
+    public void setSlackNotifierConfigJob(SlackNotifierConfigJob slackNotifierConfigJob) {
+        this.slackNotifierConfigJob = slackNotifierConfigJob;
+    }
 
     @Override
     public DescriptorImpl getDescriptor() {
@@ -70,182 +61,182 @@ public class SlackNotifier extends Notifier {
     }
 
     public String getBaseUrl() {
-        return baseUrl;
+        return slackNotifierConfigJob!=null?slackNotifierConfigJob.getBaseUrl():null;
     }
 
     public String getTeamDomain() {
-        return teamDomain;
+        return slackNotifierConfigJob!=null?slackNotifierConfigJob.getTeamDomain():null;
     }
 
     @DataBoundSetter
     public void setTeamDomain(final String teamDomain) {
-        this.teamDomain = teamDomain;
+        this.slackNotifierConfigJob.setTeamDomain(teamDomain);
     }
 
     public String getRoom() {
-        return room;
+        return slackNotifierConfigJob!=null?slackNotifierConfigJob.getRoom():null;
     }
 
     @DataBoundSetter
     public void setRoom(String room) {
-        this.room = room;
+        this.slackNotifierConfigJob.setRoom(room);
     }
 
     public String getAuthToken() {
-        return authToken;
+        return slackNotifierConfigJob!=null?slackNotifierConfigJob.getAuthToken():null;
     }
 
     @DataBoundSetter
     public void setAuthToken(String authToken) {
-        this.authToken = authToken;
+        this.slackNotifierConfigJob.setAuthToken(authToken);
     }
 
     public String getAuthTokenCredentialId() {
-        return authTokenCredentialId;
+        return slackNotifierConfigJob!=null?slackNotifierConfigJob.getAuthTokenCredentialId():null;
     }
 
     @DataBoundSetter
     public void setAuthTokenCredentialId(String authTokenCredentialId) {
-        this.authTokenCredentialId = authTokenCredentialId;
+        this.slackNotifierConfigJob.setAuthTokenCredentialId(authTokenCredentialId);
     }
 
     public boolean getBotUser() {
-        return botUser;
+        return slackNotifierConfigJob!=null?slackNotifierConfigJob.isBotUser():false;
     }
 
     @DataBoundSetter
     public void setBotUser(boolean botUser) {
-        this.botUser = botUser;
+        this.slackNotifierConfigJob.setBotUser(botUser);
     }
 
     public String getSendAs() {
-        return sendAs;
+        return slackNotifierConfigJob!=null?slackNotifierConfigJob.getSendAs():null;
     }
 
     @DataBoundSetter
     public void setSendAs(String sendAs) {
-        this.sendAs = sendAs;
+        this.slackNotifierConfigJob.setSendAs(sendAs);
     }
 
     public boolean getStartNotification() {
-        return startNotification;
+        return slackNotifierConfigJob!=null?slackNotifierConfigJob.isStartNotification():false;
     }
 
     public boolean getNotifySuccess() {
-        return notifySuccess;
+        return slackNotifierConfigJob!=null?slackNotifierConfigJob.isNotifySuccess():false;
     }
 
     public CommitInfoChoice getCommitInfoChoice() {
-        return commitInfoChoice;
+        return slackNotifierConfigJob!=null?slackNotifierConfigJob.getCommitInfoChoice():null;
     }
 
     public boolean getNotifyAborted() {
-        return notifyAborted;
+        return slackNotifierConfigJob!=null?slackNotifierConfigJob.isNotifyAborted():false;
     }
 
     public boolean getNotifyFailure() {
-        return notifyFailure;
+        return slackNotifierConfigJob!=null?slackNotifierConfigJob.isNotifyFailure():false;
     }
 
     public boolean getNotifyNotBuilt() {
-        return notifyNotBuilt;
+        return slackNotifierConfigJob!=null?slackNotifierConfigJob.isNotifyNotBuilt():false;
     }
 
     public boolean getNotifyUnstable() {
-        return notifyUnstable;
+        return slackNotifierConfigJob!=null?slackNotifierConfigJob.isNotifyUnstable():false;
     }
 
     public boolean getNotifyRegression() {
-        return notifyRegression;
+        return slackNotifierConfigJob!=null?slackNotifierConfigJob.isNotifyRegression():false;
     }
 
     public boolean getNotifyBackToNormal() {
-        return notifyBackToNormal;
+        return slackNotifierConfigJob!=null?slackNotifierConfigJob.isNotifyBackToNormal():false;
     }
 
     public boolean includeTestSummary() {
-        return includeTestSummary;
+        return slackNotifierConfigJob!=null?slackNotifierConfigJob.isIncludeTestSummary():false;
     }
 
     public boolean includeFailedTests() {
-        return includeFailedTests;
+        return slackNotifierConfigJob!=null?slackNotifierConfigJob.isIncludeFailedTests():false;
     }
 
     public boolean getNotifyRepeatedFailure() {
-        return notifyRepeatedFailure;
+        return slackNotifierConfigJob!=null?slackNotifierConfigJob.isNotifyRepeatedFailure():false;
     }
 
     public boolean includeCustomMessage() {
-        return includeCustomMessage;
+        return slackNotifierConfigJob!=null?slackNotifierConfigJob.isIncludeCustomMessage():false;
     }
 
     public String getCustomMessage() {
-        return customMessage;
+        return slackNotifierConfigJob!=null?slackNotifierConfigJob.getCustomMessage():null;
     }
 
     @DataBoundSetter
     public void setStartNotification(boolean startNotification) {
-        this.startNotification = startNotification;
+        this.slackNotifierConfigJob.setStartNotification(startNotification);
     }
 
     @DataBoundSetter
     public void setNotifySuccess(boolean notifySuccess) {
-        this.notifySuccess = notifySuccess;
+        this.slackNotifierConfigJob.setNotifySuccess(notifySuccess);
     }
 
     @DataBoundSetter
     public void setCommitInfoChoice(CommitInfoChoice commitInfoChoice) {
-        this.commitInfoChoice = commitInfoChoice;
+        this.slackNotifierConfigJob.setCommitInfoChoice(commitInfoChoice);
     }
 
     @DataBoundSetter
     public void setNotifyAborted(boolean notifyAborted) {
-        this.notifyAborted = notifyAborted;
+        this.slackNotifierConfigJob.setNotifyAborted(notifyAborted);
     }
 
     @DataBoundSetter
     public void setNotifyFailure(boolean notifyFailure) {
-        this.notifyFailure = notifyFailure;
+        this.slackNotifierConfigJob.setNotifyFailure(notifyFailure);
     }
 
     @DataBoundSetter
     public void setNotifyNotBuilt(boolean notifyNotBuilt) {
-        this.notifyNotBuilt = notifyNotBuilt;
+        this.slackNotifierConfigJob.setNotifyNotBuilt(notifyNotBuilt);
     }
 
     @DataBoundSetter
     public void setNotifyUnstable(boolean notifyUnstable) {
-        this.notifyUnstable = notifyUnstable;
+        this.slackNotifierConfigJob.setNotifyUnstable(notifyUnstable);
     }
 
     @DataBoundSetter
     public void setNotifyRegression(boolean notifyRegression) {
-        this.notifyRegression = notifyRegression;
+        this.slackNotifierConfigJob.setNotifyRegression(notifyRegression);
     }
 
     @DataBoundSetter
     public void setNotifyBackToNormal(boolean notifyBackToNormal) {
-        this.notifyBackToNormal = notifyBackToNormal;
+        this.slackNotifierConfigJob.setNotifyBackToNormal(notifyBackToNormal);
     }
 
     @DataBoundSetter
     public void setIncludeTestSummary(boolean includeTestSummary) {
-        this.includeTestSummary = includeTestSummary;
+        this.slackNotifierConfigJob.setIncludeTestSummary(includeTestSummary);
     }
 
     @DataBoundSetter
     public void setNotifyRepeatedFailure(boolean notifyRepeatedFailure) {
-        this.notifyRepeatedFailure = notifyRepeatedFailure;
+        this.slackNotifierConfigJob.setNotifyRepeatedFailure(notifyRepeatedFailure);
     }
 
     @DataBoundSetter
     public void setIncludeCustomMessage(boolean includeCustomMessage) {
-        this.includeCustomMessage = includeCustomMessage;
+        this.slackNotifierConfigJob.setIncludeCustomMessage(includeCustomMessage);
     }
 
     @DataBoundSetter
     public void setCustomMessage(String customMessage) {
-        this.customMessage = customMessage;
+        this.slackNotifierConfigJob.setCustomMessage(customMessage);
     }
 
     @DataBoundConstructor
@@ -257,27 +248,6 @@ public class SlackNotifier extends Notifier {
         super();
         this.slackNotifierConfigJob = _slackNotifierConfigJob;
 
-        this.baseUrl = slackNotifierConfigJob.getBaseUrl();
-        this.teamDomain = _slackNotifierConfigJob.getTeamDomain();
-        this.authToken = _slackNotifierConfigJob.getToken();
-        this.authTokenCredentialId = _slackNotifierConfigJob.getAuthTokenCredentialId();
-        this.botUser = _slackNotifierConfigJob.isBotUser();
-        this.room = _slackNotifierConfigJob.getRoomId();
-        this.sendAs = _slackNotifierConfigJob.getSendAs();
-        this.startNotification = _slackNotifierConfigJob.isStartNotification();
-        this.notifyAborted = _slackNotifierConfigJob.isNotifyAborted();
-        this.notifyFailure = _slackNotifierConfigJob.isNotifyFailure();
-        this.notifyNotBuilt = _slackNotifierConfigJob.isNotifyNotBuilt();
-        this.notifySuccess = _slackNotifierConfigJob.isNotifySuccess();
-        this.notifyUnstable = _slackNotifierConfigJob.isNotifyUnstable();
-        this.notifyRegression = _slackNotifierConfigJob.isNotifyRegression();
-        this.notifyBackToNormal = _slackNotifierConfigJob.isNotifyBackToNormal();
-        this.notifyRepeatedFailure = _slackNotifierConfigJob.isNotifyRepeatedFailure();
-        this.includeTestSummary = _slackNotifierConfigJob.isIncludeTestSummary();
-        this.includeFailedTests = _slackNotifierConfigJob.isIncludeFailedTests();
-        this.commitInfoChoice = _slackNotifierConfigJob.getCommitInfoChoice();
-        this.includeCustomMessage = _slackNotifierConfigJob.isIncludeCustomMessage();
-        this.customMessage = _slackNotifierConfigJob.getCustomMessage();
     }
 
     public BuildStepMonitor getRequiredMonitorService() {
@@ -285,27 +255,28 @@ public class SlackNotifier extends Notifier {
     }
 
     public SlackService newSlackService(AbstractBuild r, BuildListener listener) {
-        String teamDomain = this.teamDomain;
+        String baseUrl = slackNotifierConfigJob.getBaseUrl();
+        String teamDomain = slackNotifierConfigJob.getTeamDomain();
+        String authToken = slackNotifierConfigJob.getAuthToken();
+        String  authTokenCredentialId = slackNotifierConfigJob.getAuthTokenCredentialId();
+        boolean botUser = slackNotifierConfigJob.isBotUser();
+        String room = slackNotifierConfigJob.getRoom();
+
         if (StringUtils.isEmpty(teamDomain)) {
             teamDomain = getDescriptor().getTeamDomain();
         }
 
-        String baseUrl = this.baseUrl;
         if (StringUtils.isEmpty(baseUrl)) {
             baseUrl = getDescriptor().getBaseUrl();
         }
 
-        String authToken = this.authToken;
-        boolean botUser = this.botUser;
         if (StringUtils.isEmpty(authToken)) {
             authToken = getDescriptor().getToken();
             botUser = getDescriptor().getBotUser();
         }
-        String authTokenCredentialId = this.authTokenCredentialId;
         if (StringUtils.isEmpty(authTokenCredentialId)) {
             authTokenCredentialId = getDescriptor().getTokenCredentialId();
         }
-        String room = this.room;
         if (StringUtils.isEmpty(room)) {
             room = getDescriptor().getRoom();
         }
@@ -333,7 +304,7 @@ public class SlackNotifier extends Notifier {
 
     @Override
     public boolean prebuild(AbstractBuild<?, ?> build, BuildListener listener) {
-        if (startNotification) {
+        if (slackNotifierConfigJob.isStartNotification()) {
             Map<Descriptor<Publisher>, Publisher> map = build.getProject().getPublishersList().toMap();
             for (Publisher publisher : map.values()) {
                 if (publisher instanceof SlackNotifier) {
@@ -366,7 +337,7 @@ public class SlackNotifier extends Notifier {
         }
 
         public String getToken() {
-            return slackNotifierConfigGlobal!=null?slackNotifierConfigGlobal.getToken():null;
+            return slackNotifierConfigGlobal!=null?slackNotifierConfigGlobal.getAuthToken():null;
         }
 
         public String getTokenCredentialId() {
@@ -378,7 +349,7 @@ public class SlackNotifier extends Notifier {
         }
 
         public String getRoom() {
-            return slackNotifierConfigGlobal!=null?slackNotifierConfigGlobal.getRoomId():null;
+            return slackNotifierConfigGlobal!=null?slackNotifierConfigGlobal.getRoom():null;
         }
 
         public String getSendAs() {
@@ -399,7 +370,7 @@ public class SlackNotifier extends Notifier {
                     );
         }
 
-        //WARN users that they should not use the plain/exposed token, but rather the token credential id
+        //WARN users that they should not use the plain/exposed authToken, but rather the authToken credential id
         public FormValidation doCheckToken(@QueryParameter String value) {
             //always show the warning - TODO investigate if there is a better way to handle this
             return FormValidation.warning("Exposing your Integration Token is a security risk. Please use the Integration Token Credential ID");
@@ -674,4 +645,5 @@ public class SlackNotifier extends Notifier {
             logger.info("Completed Settings Migration Process");
         }
     }
+
 }
