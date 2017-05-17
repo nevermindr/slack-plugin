@@ -1,6 +1,5 @@
 package jenkins.plugins.slack;
 
-import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.converters.reflection.ReflectionConverter;
@@ -8,6 +7,8 @@ import com.thoughtworks.xstream.converters.reflection.ReflectionProvider;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.mapper.Mapper;
+
+import java.util.logging.Logger;
 
 public class SlackNotifierConfigJob extends SlackNotifierConfigGlobal {
     private boolean startNotification;
@@ -25,13 +26,16 @@ public class SlackNotifierConfigJob extends SlackNotifierConfigGlobal {
     private boolean includeCustomMessage;
     private String customMessage;
 
-    protected String authToken;
-    protected String authTokenCredentialId;
-
-    @XStreamOmitField
+    //FIXME: migration should be implemented to convert authToken => token
     protected String token;
 
     protected String tokenCredentialId;
+
+    //this fields are here to support 1.8-2.x migration
+    @Deprecated
+    private String authToken;
+    @Deprecated
+    private String authTokenCredentialId;
 
     public SlackNotifierConfigJob() {
 
@@ -39,7 +43,6 @@ public class SlackNotifierConfigJob extends SlackNotifierConfigGlobal {
 
     public SlackNotifierConfigJob(String baseUrl, String teamDomain, String authToken, String authTokenCredentialId, boolean botUser, String room, String sendAs, boolean startNotification, boolean notifyAborted, boolean notifyFailure, boolean notifyNotBuilt, boolean notifySuccess, boolean notifyUnstable, boolean notifyRegression, boolean notifyBackToNormal, boolean notifyRepeatedFailure, boolean includeTestSummary, boolean includeFailedTests, CommitInfoChoice commitInfoChoice, boolean includeCustomMessage, String customMessage) {
         super(baseUrl, teamDomain, authToken, authTokenCredentialId, botUser, room, sendAs);
-
 
         this.startNotification = startNotification;
         this.notifyAborted = notifyAborted;
@@ -57,20 +60,40 @@ public class SlackNotifierConfigJob extends SlackNotifierConfigGlobal {
         this.customMessage = customMessage;
     }
 
+    @Deprecated
     public String getAuthToken() {
         return authToken;
     }
 
+    @Deprecated
     public String getAuthTokenCredentialId() {
         return authTokenCredentialId;
     }
-
+    @Deprecated
     public void setAuthToken(String authToken) {
         this.authToken = authToken;
     }
-
+    @Deprecated
     public void setAuthTokenCredentialId(String authTokenCredentialId) {
         this.authTokenCredentialId = authTokenCredentialId;
+    }
+
+
+    public String getToken() {
+
+        return this.token;
+    }
+
+    public String getTokenCredentialId() {
+        return this.tokenCredentialId;
+    }
+
+    public void setToken(String authToken) {
+        this.token = authToken;
+    }
+
+    public void setTokenCredentialId(String authTokenCredentialId) {
+        this.tokenCredentialId = authTokenCredentialId;
     }
 
     public boolean isStartNotification() {
@@ -186,6 +209,8 @@ public class SlackNotifierConfigJob extends SlackNotifierConfigGlobal {
     }
 
     public static class SlackNotifierConfigJobConverter extends ReflectionConverter {
+        private static final Logger logger = Logger.getLogger(SlackNotifierConfigJobConverter.class.getName());
+
         public SlackNotifierConfigJobConverter(Mapper mapper, ReflectionProvider reflectionProvider) {
             super(mapper, reflectionProvider);
         }
@@ -197,13 +222,26 @@ public class SlackNotifierConfigJob extends SlackNotifierConfigGlobal {
         public void marshal(Object source, HierarchicalStreamWriter writer,
                             MarshallingContext context) {
 
-            super.marshal(((SlackNotifier)source).getSlackNotifierConfigJob(), writer, context);
+            SlackNotifierConfigJob slackNotifierConfigJob = ((SlackNotifier)source).getSlackNotifierConfigJob();
+
+            logger.fine(String.format("token: %s", slackNotifierConfigJob.getToken()));
+            logger.fine(String.format("SlackNotifierConfigGlobal.token: %s", ((SlackNotifierConfigGlobal)slackNotifierConfigJob).getToken()));
+
+            logger.fine(String.format("baseURL: %s", slackNotifierConfigJob.getBaseUrl()));
+            logger.fine(String.format("room: %s", slackNotifierConfigJob.getRoom()));
+
+            super.marshal(slackNotifierConfigJob, writer, context);
         }
 
         public Object unmarshal(HierarchicalStreamReader reader,
                                 UnmarshallingContext context) {
 
             SlackNotifierConfigJob slackNotifierConfigJob = (SlackNotifierConfigJob) super.unmarshal(reader, context);
+
+            logger.fine(String.format("token: %s", slackNotifierConfigJob.getToken()));
+            logger.fine(String.format("baseURL: %s", slackNotifierConfigJob.getBaseUrl()));
+            logger.fine(String.format("room: %s", slackNotifierConfigJob.getRoom()));
+
 
             SlackNotifier notifier = new SlackNotifier();
             notifier.setSlackNotifierConfigJob(slackNotifierConfigJob);

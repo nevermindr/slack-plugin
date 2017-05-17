@@ -32,6 +32,7 @@ import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.export.Exported;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -82,22 +83,22 @@ public class SlackNotifier extends Notifier {
         this.slackNotifierConfigJob.setRoom(room);
     }
 
-    public String getAuthToken() {
-        return slackNotifierConfigJob!=null?slackNotifierConfigJob.getAuthToken():null;
+    public String getToken() {
+        return slackNotifierConfigJob!=null?slackNotifierConfigJob.getToken():null;
     }
 
     @DataBoundSetter
-    public void setAuthToken(String authToken) {
-        this.slackNotifierConfigJob.setAuthToken(authToken);
+    public void setToken(String authToken) {
+        this.slackNotifierConfigJob.setToken(authToken);
     }
 
-    public String getAuthTokenCredentialId() {
-        return slackNotifierConfigJob!=null?slackNotifierConfigJob.getAuthTokenCredentialId():null;
+    public String getTokenCredentialId() {
+        return slackNotifierConfigJob!=null?slackNotifierConfigJob.getTokenCredentialId():null;
     }
 
     @DataBoundSetter
-    public void setAuthTokenCredentialId(String authTokenCredentialId) {
-        this.slackNotifierConfigJob.setAuthTokenCredentialId(authTokenCredentialId);
+    public void setTokenCredentialId(String authTokenCredentialId) {
+        this.slackNotifierConfigJob.setTokenCredentialId(authTokenCredentialId);
     }
 
     public boolean getBotUser() {
@@ -154,11 +155,11 @@ public class SlackNotifier extends Notifier {
         return slackNotifierConfigJob!=null?slackNotifierConfigJob.isNotifyBackToNormal():false;
     }
 
-    public boolean includeTestSummary() {
+    public boolean getIncludeTestSummary() {
         return slackNotifierConfigJob!=null?slackNotifierConfigJob.isIncludeTestSummary():false;
     }
 
-    public boolean includeFailedTests() {
+    public boolean isIncludeFailedTests() {
         return slackNotifierConfigJob!=null?slackNotifierConfigJob.isIncludeFailedTests():false;
     }
 
@@ -166,7 +167,7 @@ public class SlackNotifier extends Notifier {
         return slackNotifierConfigJob!=null?slackNotifierConfigJob.isNotifyRepeatedFailure():false;
     }
 
-    public boolean includeCustomMessage() {
+    public boolean getIncludeCustomMessage() {
         return slackNotifierConfigJob!=null?slackNotifierConfigJob.isIncludeCustomMessage():false;
     }
 
@@ -257,8 +258,8 @@ public class SlackNotifier extends Notifier {
     public SlackService newSlackService(AbstractBuild r, BuildListener listener) {
         String baseUrl = slackNotifierConfigJob.getBaseUrl();
         String teamDomain = slackNotifierConfigJob.getTeamDomain();
-        String authToken = slackNotifierConfigJob.getAuthToken();
-        String  authTokenCredentialId = slackNotifierConfigJob.getAuthTokenCredentialId();
+        String authToken = slackNotifierConfigJob.getToken();
+        String  authTokenCredentialId = slackNotifierConfigJob.getTokenCredentialId();
         boolean botUser = slackNotifierConfigJob.isBotUser();
         String room = slackNotifierConfigJob.getRoom();
 
@@ -320,6 +321,8 @@ public class SlackNotifier extends Notifier {
     @Extension
     @XStreamConverter(SlackNotifierConfigGlobal.SlackNotifierConfigGlobalConverter.class)
     public static class DescriptorImpl extends BuildStepDescriptor<Publisher> {
+        private static final Logger logger = Logger.getLogger(DescriptorImpl.class.getName());
+
 
         private SlackNotifierConfigGlobal slackNotifierConfigGlobal;
 
@@ -346,11 +349,11 @@ public class SlackNotifier extends Notifier {
         }
 
         public String getToken() {
-            return slackNotifierConfigGlobal!=null?slackNotifierConfigGlobal.getAuthToken():null;
+            return slackNotifierConfigGlobal!=null?slackNotifierConfigGlobal.getToken():null;
         }
 
         public String getTokenCredentialId() {
-            return slackNotifierConfigGlobal!=null?slackNotifierConfigGlobal.getAuthTokenCredentialId():null;
+            return slackNotifierConfigGlobal!=null?slackNotifierConfigGlobal.getTokenCredentialId():null;
         }
 
         public boolean getBotUser() {
@@ -451,6 +454,7 @@ public class SlackNotifier extends Notifier {
                                                @QueryParameter("tokenCredentialId") final String authTokenCredentialId,
                                                @QueryParameter("slackBotUser") final boolean botUser,
                                                @QueryParameter("slackRoom") final String room) throws FormException {
+            logger.finer(String.format("(%s,%s,%s,%s,%s,%s)", baseUrl, teamDomain, authToken, authTokenCredentialId, botUser, room));
             try {
                 String targetUrl = baseUrl;
                 if(targetUrl != null && !targetUrl.isEmpty() && !targetUrl.endsWith("/")) {

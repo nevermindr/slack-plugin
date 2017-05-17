@@ -68,8 +68,8 @@ public class AbstractProjectConfigMigrator {
         if (StringUtils.isBlank(slackNotifierConfigJob.getTeamDomain())) {
             slackNotifierConfigJob.setTeamDomain(slackJobProperty.getTeamDomain());
         }
-        if (StringUtils.isBlank(slackNotifierConfigJob.getAuthToken())) {
-            slackNotifierConfigJob.setAuthToken(slackJobProperty.getToken());
+        if (StringUtils.isBlank(slackNotifierConfigJob.getToken())) {
+            slackNotifierConfigJob.setToken(slackJobProperty.getToken());
         }
         if (StringUtils.isBlank(slackNotifierConfigJob.getRoom())) {
             slackNotifierConfigJob.setRoom(slackJobProperty.getRoom());

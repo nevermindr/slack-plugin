@@ -10,6 +10,8 @@ import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.mapper.Mapper;
 import org.apache.commons.lang.StringUtils;
 
+import java.util.logging.Logger;
+
 public class SlackNotifierConfigGlobal {
     protected String baseUrl;
     protected String teamDomain;
@@ -25,19 +27,19 @@ public class SlackNotifierConfigGlobal {
     protected String[] roomIds;
     protected String sendAs;
 
-    public String getAuthToken() {
+    public String getToken() {
         return token;
     }
 
-    public void setAuthToken(String token) {
+    public void setToken(String token) {
         this.token = token;
     }
 
-    public String getAuthTokenCredentialId() {
+    public String getTokenCredentialId() {
         return tokenCredentialId;
     }
 
-    public void setAuthTokenCredentialId(String tokenCredentialId) {
+    public void setTokenCredentialId(String tokenCredentialId) {
         this.tokenCredentialId = tokenCredentialId;
     }
 
@@ -61,7 +63,7 @@ public class SlackNotifierConfigGlobal {
         this.tokenCredentialId = StringUtils.trim(tokenCredentialId);
         this.botUser = botUser;
         this.room = room;
-        this.roomIds = room.split("[,; ]+");
+        this.roomIds = room!=null?room.split("[,; ]+"):new String[]{};
         this.sendAs = sendAs;
     }
 
@@ -122,6 +124,8 @@ public class SlackNotifierConfigGlobal {
     }
 
     public static class SlackNotifierConfigGlobalConverter extends ReflectionConverter {
+        private static final Logger logger = Logger.getLogger(SlackNotifierConfigGlobalConverter.class.getName());
+
         public SlackNotifierConfigGlobalConverter(Mapper mapper, ReflectionProvider reflectionProvider) {
             super(mapper, reflectionProvider);
         }
@@ -133,13 +137,25 @@ public class SlackNotifierConfigGlobal {
         public void marshal(Object source, HierarchicalStreamWriter writer,
                             MarshallingContext context) {
 
-            super.marshal(((SlackNotifier.DescriptorImpl)source).getSlackNotifierConfigGlobal(), writer, context);
+            SlackNotifierConfigGlobal slackNotifierConfigGlobal = ((SlackNotifier.DescriptorImpl)source).getSlackNotifierConfigGlobal();
+
+            logger.fine(String.format("token: %s", slackNotifierConfigGlobal.getToken()));
+            logger.fine(String.format("tokenCredentialId: %s", slackNotifierConfigGlobal.getTokenCredentialId()));
+
+            logger.fine(String.format("baseURL: %s", slackNotifierConfigGlobal.getBaseUrl()));
+            logger.fine(String.format("room: %s", slackNotifierConfigGlobal.getRoom()));
+
+            super.marshal(slackNotifierConfigGlobal, writer, context);
         }
 
         public Object unmarshal(HierarchicalStreamReader reader,
                                 UnmarshallingContext context) {
 
             SlackNotifierConfigGlobal slackNotifierConfigGlobal = (SlackNotifierConfigGlobal) super.unmarshal(reader, context);
+
+            logger.fine(String.format("token: %s", slackNotifierConfigGlobal.getToken()));
+            logger.fine(String.format("baseURL: %s", slackNotifierConfigGlobal.getBaseUrl()));
+            logger.fine(String.format("room: %s", slackNotifierConfigGlobal.getRoom()));
 
             SlackNotifier.DescriptorImpl descriptor = (SlackNotifier.DescriptorImpl) context.currentObject();
             descriptor.setSlackNotifierConfigGlobal(slackNotifierConfigGlobal);
