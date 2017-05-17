@@ -15,6 +15,7 @@ import jenkins.plugins.slack.CommitInfoChoice;
 import jenkins.plugins.slack.SlackNotifier;
 import jenkins.plugins.slack.SlackNotifier.SlackJobProperty;
 
+import jenkins.plugins.slack.SlackNotifierConfigJob;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -39,25 +40,26 @@ public class BackwordsCompatible_1_8_SlackNotifierTest {
     public void testBasicMigration() {
         FreeStyleProject project = (FreeStyleProject) jenkins.getItem("Test_Slack_Plugin");
         SlackNotifier notifier = project.getPublishersList().get(SlackNotifier.class);
+        SlackNotifierConfigJob slackNotifierConfigJob = notifier.getSlackNotifierConfigJob();
 
-        assertEquals("jenkins-slack-plugin", notifier.getTeamDomain());
-        assertEquals("auth-token-for-test", notifier.getAuthToken());
-        assertEquals(false, notifier.getBotUser());
-        assertEquals("#slack-plugin-testing", notifier.getRoom());
+        assertEquals("jenkins-slack-plugin", slackNotifierConfigJob.getTeamDomain());
+        assertEquals("auth-token-for-test", slackNotifierConfigJob.getAuthToken());
+        assertEquals(false, slackNotifierConfigJob.isBotUser());
+        assertEquals("#slack-plugin-testing", slackNotifierConfigJob.getRoom());
 
-        assertFalse(notifier.getStartNotification());
-        assertTrue(notifier.getNotifySuccess());
-        assertFalse(notifier.getNotifyAborted());
-        assertFalse(notifier.getNotifyNotBuilt());
-        assertFalse(notifier.getNotifyUnstable());
-        assertFalse(notifier.getNotifyRegression());
-        assertTrue(notifier.getNotifyFailure());
-        assertFalse(notifier.getNotifyBackToNormal());
-        assertFalse(notifier.getNotifyRepeatedFailure());
-        assertFalse(notifier.includeTestSummary());
-        assertEquals(CommitInfoChoice.NONE, notifier.getCommitInfoChoice());
-        assertFalse(notifier.includeCustomMessage());
-        assertEquals("", notifier.getCustomMessage());
+        assertFalse(slackNotifierConfigJob.isStartNotification());
+        assertTrue(slackNotifierConfigJob.isNotifySuccess());
+        assertFalse(slackNotifierConfigJob.isNotifyAborted());
+        assertFalse(slackNotifierConfigJob.isNotifyNotBuilt());
+        assertFalse(slackNotifierConfigJob.isNotifyUnstable());
+        assertFalse(slackNotifierConfigJob.isNotifyRegression());
+        assertTrue(slackNotifierConfigJob.isNotifyFailure());
+        assertFalse(slackNotifierConfigJob.isNotifyBackToNormal());
+        assertFalse(slackNotifierConfigJob.isNotifyRepeatedFailure());
+        assertFalse(slackNotifierConfigJob.isIncludeTestSummary());
+        assertEquals(CommitInfoChoice.NONE, slackNotifierConfigJob.getCommitInfoChoice());
+        assertFalse(slackNotifierConfigJob.isIncludeCustomMessage());
+        assertEquals("", slackNotifierConfigJob.getCustomMessage());
 
         assertNull(project.getProperty(SlackJobProperty.class));
     }
@@ -67,25 +69,26 @@ public class BackwordsCompatible_1_8_SlackNotifierTest {
     public void testGlobalSettingsOverriden() {
         FreeStyleProject project = (FreeStyleProject) jenkins.getItem("Test_Slack_Plugin");
         SlackNotifier notifier = project.getPublishersList().get(SlackNotifier.class);
+        SlackNotifierConfigJob slackNotifierConfigJob = notifier.getSlackNotifierConfigJob();
 
-        assertEquals("jenkins-slack-plugin", notifier.getTeamDomain());
-        assertEquals("auth-token-for-test", notifier.getAuthToken());
-        assertEquals(false, notifier.getBotUser());
-        assertEquals("#slack-plugin-testing", notifier.getRoom());
+        assertEquals("jenkins-slack-plugin", slackNotifierConfigJob.getTeamDomain());
+        assertEquals("auth-token-for-test", slackNotifierConfigJob.getAuthToken());
+        assertEquals(false, slackNotifierConfigJob.isBotUser());
+        assertEquals("#slack-plugin-testing", slackNotifierConfigJob.getRoom());
 
-        assertFalse(notifier.getStartNotification());
-        assertTrue(notifier.getNotifySuccess());
-        assertFalse(notifier.getNotifyAborted());
-        assertFalse(notifier.getNotifyNotBuilt());
-        assertFalse(notifier.getNotifyUnstable());
-        assertFalse(notifier.getNotifyRegression());
-        assertTrue(notifier.getNotifyFailure());
-        assertFalse(notifier.getNotifyBackToNormal());
-        assertFalse(notifier.getNotifyRepeatedFailure());
-        assertFalse(notifier.includeTestSummary());
-        assertEquals(CommitInfoChoice.NONE, notifier.getCommitInfoChoice());
-        assertFalse(notifier.includeCustomMessage());
-        assertEquals("", notifier.getCustomMessage());
+        assertFalse(slackNotifierConfigJob.isStartNotification());
+        assertTrue(slackNotifierConfigJob.isNotifySuccess());
+        assertFalse(slackNotifierConfigJob.isNotifyAborted());
+        assertFalse(slackNotifierConfigJob.isNotifyNotBuilt());
+        assertFalse(slackNotifierConfigJob.isNotifyUnstable());
+        assertFalse(slackNotifierConfigJob.isNotifyRegression());
+        assertTrue(slackNotifierConfigJob.isNotifyFailure());
+        assertFalse(slackNotifierConfigJob.isNotifyBackToNormal());
+        assertFalse(slackNotifierConfigJob.isNotifyRepeatedFailure());
+        assertFalse(slackNotifierConfigJob.isIncludeTestSummary());
+        assertEquals(CommitInfoChoice.NONE, slackNotifierConfigJob.getCommitInfoChoice());
+        assertFalse(slackNotifierConfigJob.isIncludeCustomMessage());
+        assertEquals("", slackNotifierConfigJob.getCustomMessage());
 
         assertNull(project.getProperty(SlackJobProperty.class));
     }
@@ -95,25 +98,26 @@ public class BackwordsCompatible_1_8_SlackNotifierTest {
     public void testGlobalSettingsNotOverridden() throws IOException {
         FreeStyleProject project = (FreeStyleProject) jenkins.getItem("Test_Slack_Plugin");
         SlackNotifier notifier = project.getPublishersList().get(SlackNotifier.class);
+        SlackNotifierConfigJob slackNotifierConfigJob = notifier.getSlackNotifierConfigJob();
 
-        assertEquals("", notifier.getTeamDomain());
-        assertEquals("", notifier.getAuthToken());
-        assertEquals(false, notifier.getBotUser());
-        assertEquals("", notifier.getRoom());
+        assertEquals("", slackNotifierConfigJob.getTeamDomain());
+        assertEquals("", slackNotifierConfigJob.getAuthToken());
+        assertEquals(false, slackNotifierConfigJob.isBotUser());
+        assertEquals("", slackNotifierConfigJob.getRoom());
 
-        assertFalse(notifier.getStartNotification());
-        assertTrue(notifier.getNotifySuccess());
-        assertFalse(notifier.getNotifyAborted());
-        assertFalse(notifier.getNotifyNotBuilt());
-        assertFalse(notifier.getNotifyUnstable());
-        assertFalse(notifier.getNotifyRegression());
-        assertTrue(notifier.getNotifyFailure());
-        assertFalse(notifier.getNotifyBackToNormal());
-        assertFalse(notifier.getNotifyRepeatedFailure());
-        assertFalse(notifier.includeTestSummary());
-        assertEquals(CommitInfoChoice.NONE, notifier.getCommitInfoChoice());
-        assertFalse(notifier.includeCustomMessage());
-        assertEquals("", notifier.getCustomMessage());
+        assertFalse(slackNotifierConfigJob.isStartNotification());
+        assertTrue(slackNotifierConfigJob.isNotifySuccess());
+        assertFalse(slackNotifierConfigJob.isNotifyAborted());
+        assertFalse(slackNotifierConfigJob.isNotifyNotBuilt());
+        assertFalse(slackNotifierConfigJob.isNotifyUnstable());
+        assertFalse(slackNotifierConfigJob.isNotifyRegression());
+        assertTrue(slackNotifierConfigJob.isNotifyFailure());
+        assertFalse(slackNotifierConfigJob.isNotifyBackToNormal());
+        assertFalse(slackNotifierConfigJob.isNotifyRepeatedFailure());
+        assertFalse(slackNotifierConfigJob.isIncludeTestSummary());
+        assertEquals(CommitInfoChoice.NONE, slackNotifierConfigJob.getCommitInfoChoice());
+        assertFalse(slackNotifierConfigJob.isIncludeCustomMessage());
+        assertEquals("", slackNotifierConfigJob.getCustomMessage());
 
         assertNull(project.getProperty(SlackJobProperty.class));
     }
@@ -151,25 +155,28 @@ public class BackwordsCompatible_1_8_SlackNotifierTest {
         FreeStyleProject project2 = (FreeStyleProject) jenkins.getItem("Test_02");
         SlackNotifier notifier = project2.getPublishersList().get(SlackNotifier.class);
         assertNotNull(notifier);
+        SlackNotifierConfigJob slackNotifierConfigJob = notifier.getSlackNotifierConfigJob();
+        assertNotNull(slackNotifierConfigJob);
 
-        assertEquals("", notifier.getTeamDomain());
-        assertEquals("", notifier.getAuthToken());
-        assertEquals(false, notifier.getBotUser());
-        assertEquals("", notifier.getRoom());
 
-        assertTrue(notifier.getStartNotification());
-        assertTrue(notifier.getNotifySuccess());
-        assertTrue(notifier.getNotifyAborted());
-        assertTrue(notifier.getNotifyNotBuilt());
-        assertTrue(notifier.getNotifyUnstable());
-        assertTrue(notifier.getNotifyRegression());
-        assertTrue(notifier.getNotifyFailure());
-        assertTrue(notifier.getNotifyBackToNormal());
-        assertTrue(notifier.getNotifyRepeatedFailure());
-        assertTrue(notifier.includeTestSummary());
-        assertEquals(CommitInfoChoice.AUTHORS_AND_TITLES, notifier.getCommitInfoChoice());
-        assertTrue(notifier.includeCustomMessage());
-        assertEquals("Custom message for 1.8 plugin.", notifier.getCustomMessage());
+        assertEquals("", slackNotifierConfigJob.getTeamDomain());
+        assertEquals("", slackNotifierConfigJob.getAuthToken());
+        assertEquals(false, slackNotifierConfigJob.isBotUser());
+        assertEquals("", slackNotifierConfigJob.getRoom());
+
+        assertTrue(slackNotifierConfigJob.isStartNotification());
+        assertTrue(slackNotifierConfigJob.isNotifySuccess());
+        assertTrue(slackNotifierConfigJob.isNotifyAborted());
+        assertTrue(slackNotifierConfigJob.isNotifyNotBuilt());
+        assertTrue(slackNotifierConfigJob.isNotifyUnstable());
+        assertTrue(slackNotifierConfigJob.isNotifyRegression());
+        assertTrue(slackNotifierConfigJob.isNotifyFailure());
+        assertTrue(slackNotifierConfigJob.isNotifyBackToNormal());
+        assertTrue(slackNotifierConfigJob.isNotifyRepeatedFailure());
+        assertTrue(slackNotifierConfigJob.isIncludeTestSummary());
+        assertEquals(CommitInfoChoice.AUTHORS_AND_TITLES, slackNotifierConfigJob.getCommitInfoChoice());
+        assertTrue(slackNotifierConfigJob.isIncludeCustomMessage());
+        assertEquals("Custom message for 1.8 plugin.", slackNotifierConfigJob.getCustomMessage());
 
         assertNull(project2.getProperty(SlackJobProperty.class));
     }

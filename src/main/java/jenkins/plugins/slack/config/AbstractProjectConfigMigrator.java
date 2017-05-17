@@ -10,6 +10,7 @@ import jenkins.plugins.slack.CommitInfoChoice;
 import jenkins.plugins.slack.SlackNotifier;
 import jenkins.plugins.slack.SlackNotifier.SlackJobProperty;
 
+import jenkins.plugins.slack.SlackNotifierConfigJob;
 import org.apache.commons.lang.StringUtils;
 
 /**
@@ -60,33 +61,35 @@ public class AbstractProjectConfigMigrator {
     }
 
     private void updateSlackNotifier(final SlackNotifier slackNotifier,
-            final SlackJobProperty slackJobProperty) {
+                                     final SlackJobProperty slackJobProperty) {
 
-        if (StringUtils.isBlank(slackNotifier.getTeamDomain())) {
-            slackNotifier.setTeamDomain(slackJobProperty.getTeamDomain());
+        SlackNotifierConfigJob slackNotifierConfigJob = slackNotifier.getSlackNotifierConfigJob();
+        
+        if (StringUtils.isBlank(slackNotifierConfigJob.getTeamDomain())) {
+            slackNotifierConfigJob.setTeamDomain(slackJobProperty.getTeamDomain());
         }
-        if (StringUtils.isBlank(slackNotifier.getAuthToken())) {
-            slackNotifier.setAuthToken(slackJobProperty.getToken());
+        if (StringUtils.isBlank(slackNotifierConfigJob.getAuthToken())) {
+            slackNotifierConfigJob.setAuthToken(slackJobProperty.getToken());
         }
-        if (StringUtils.isBlank(slackNotifier.getRoom())) {
-            slackNotifier.setRoom(slackJobProperty.getRoom());
+        if (StringUtils.isBlank(slackNotifierConfigJob.getRoom())) {
+            slackNotifierConfigJob.setRoom(slackJobProperty.getRoom());
         }
 
-        slackNotifier.setStartNotification(slackJobProperty.getStartNotification());
+        slackNotifierConfigJob.setStartNotification(slackJobProperty.getStartNotification());
 
-        slackNotifier.setNotifyAborted(slackJobProperty.getNotifyAborted());
-        slackNotifier.setNotifyFailure(slackJobProperty.getNotifyFailure());
-        slackNotifier.setNotifyNotBuilt(slackJobProperty.getNotifyNotBuilt());
-        slackNotifier.setNotifySuccess(slackJobProperty.getNotifySuccess());
-        slackNotifier.setNotifyUnstable(slackJobProperty.getNotifyUnstable());
-        slackNotifier.setNotifyRegression(slackJobProperty.getNotifyRegression());
-        slackNotifier.setNotifyBackToNormal(slackJobProperty.getNotifyBackToNormal());
-        slackNotifier.setNotifyRepeatedFailure(slackJobProperty.getNotifyRepeatedFailure());
+        slackNotifierConfigJob.setNotifyAborted(slackJobProperty.getNotifyAborted());
+        slackNotifierConfigJob.setNotifyFailure(slackJobProperty.getNotifyFailure());
+        slackNotifierConfigJob.setNotifyNotBuilt(slackJobProperty.getNotifyNotBuilt());
+        slackNotifierConfigJob.setNotifySuccess(slackJobProperty.getNotifySuccess());
+        slackNotifierConfigJob.setNotifyUnstable(slackJobProperty.getNotifyUnstable());
+        slackNotifierConfigJob.setNotifyRegression(slackJobProperty.getNotifyRegression());
+        slackNotifierConfigJob.setNotifyBackToNormal(slackJobProperty.getNotifyBackToNormal());
+        slackNotifierConfigJob.setNotifyRepeatedFailure(slackJobProperty.getNotifyRepeatedFailure());
 
-        slackNotifier.setIncludeTestSummary(slackJobProperty.includeTestSummary());
-        slackNotifier.setCommitInfoChoice(getCommitInfoChoice(slackJobProperty));
-        slackNotifier.setIncludeCustomMessage(slackJobProperty.includeCustomMessage());
-        slackNotifier.setCustomMessage(slackJobProperty.getCustomMessage());
+        slackNotifierConfigJob.setIncludeTestSummary(slackJobProperty.includeTestSummary());
+        slackNotifierConfigJob.setCommitInfoChoice(getCommitInfoChoice(slackJobProperty));
+        slackNotifierConfigJob.setIncludeCustomMessage(slackJobProperty.includeCustomMessage());
+        slackNotifierConfigJob.setCustomMessage(slackJobProperty.getCustomMessage());
     }
 
     private CommitInfoChoice getCommitInfoChoice(final SlackJobProperty slackJobProperty) {

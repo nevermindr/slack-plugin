@@ -42,11 +42,13 @@ public class ActiveNotifier implements FineGrainedNotifier {
     private static final Logger logger = Logger.getLogger(SlackListener.class.getName());
 
     SlackNotifier notifier;
+    SlackNotifierConfigJob slackNotifierConfigJob;
     BuildListener listener;
 
     public ActiveNotifier(SlackNotifier notifier, BuildListener listener) {
         super();
         this.notifier = notifier;
+        this.slackNotifierConfigJob = notifier.getSlackNotifierConfigJob();
         this.listener = listener;
     }
 
@@ -66,10 +68,10 @@ public class ActiveNotifier implements FineGrainedNotifier {
         if (causeAction != null) {
             Cause scmCause = causeAction.findCause(SCMTrigger.SCMTriggerCause.class);
             if (scmCause == null) {
-                MessageBuilder message = new MessageBuilder(notifier, build);
+                MessageBuilder message = new MessageBuilder(slackNotifierConfigJob, build);
                 message.append(causeAction.getShortDescription());
                 message.appendOpenLink();
-                if (notifier.includeCustomMessage()) {
+                if (slackNotifierConfigJob.isIncludeCustomMessage()) {
                   message.appendCustomMessage();
                 }
                 notifyStart(build, message.toString());
@@ -78,11 +80,11 @@ public class ActiveNotifier implements FineGrainedNotifier {
             }
         }
 
-        String changes = getChanges(build, notifier.includeCustomMessage());
+        String changes = getChanges(build, slackNotifierConfigJob.isIncludeCustomMessage());
         if (changes != null) {
             notifyStart(build, changes);
         } else {
-            notifyStart(build, getBuildStatusMessage(build, false, false, notifier.includeCustomMessage()));
+            notifyStart(build, getBuildStatusMessage(build, false, false, slackNotifierConfigJob.isIncludeCustomMessage()));
         }
     }
 
@@ -104,10 +106,10 @@ public class ActiveNotifier implements FineGrainedNotifier {
             previousBuild = previousBuild.getPreviousCompletedBuild();
         } while (previousBuild != null && previousBuild.getResult() == Result.ABORTED);
         Result previousResult = (previousBuild != null) ? previousBuild.getResult() : Result.SUCCESS;
-        if((result.isWorseThan(previousResult) || moreTestFailuresThanPreviousBuild(r, previousBuild)) && notifier.getNotifyRegression()) {
-            getSlack(r).publish(getBuildStatusMessage(r, notifier.includeTestSummary(),
-                    notifier.includeFailedTests(), notifier.includeCustomMessage()), getBuildColor(r));
-            if (notifier.getCommitInfoChoice().showAnything()) {
+        if((result.isWorseThan(previousResult) || moreTestFailuresThanPreviousBuild(r, previousBuild)) && slackNotifierConfigJob.isNotifyRegression()) {
+            getSlack(r).publish(getBuildStatusMessage(r, slackNotifierConfigJob.isIncludeTestSummary(),
+                    slackNotifierConfigJob.isIncludeFailedTests(), slackNotifierConfigJob.isIncludeCustomMessage()), getBuildColor(r));
+            if (slackNotifierConfigJob.getCommitInfoChoice().showAnything()) {
                 getSlack(r).publish(getCommitList(r), getBuildColor(r));
             }
         }
@@ -121,22 +123,22 @@ public class ActiveNotifier implements FineGrainedNotifier {
             previousBuild = previousBuild.getPreviousCompletedBuild();
         } while (previousBuild != null && previousBuild.getResult() == Result.ABORTED);
         Result previousResult = (previousBuild != null) ? previousBuild.getResult() : Result.SUCCESS;
-        if ((result == Result.ABORTED && notifier.getNotifyAborted())
+        if ((result == Result.ABORTED && slackNotifierConfigJob.isNotifyAborted())
                 || (result == Result.FAILURE //notify only on single failed build
                     && previousResult != Result.FAILURE
-                    && notifier.getNotifyFailure())
+                    && slackNotifierConfigJob.isNotifyFailure())
                 || (result == Result.FAILURE //notify only on repeated failures
                     && previousResult == Result.FAILURE
-                    && notifier.getNotifyRepeatedFailure())
-                || (result == Result.NOT_BUILT && notifier.getNotifyNotBuilt())
+                    && slackNotifierConfigJob.isNotifyRepeatedFailure())
+                || (result == Result.NOT_BUILT && slackNotifierConfigJob.isNotifyNotBuilt())
                 || (result == Result.SUCCESS
                     && (previousResult == Result.FAILURE || previousResult == Result.UNSTABLE)
-                    && notifier.getNotifyBackToNormal())
-                || (result == Result.SUCCESS && notifier.getNotifySuccess())
-                || (result == Result.UNSTABLE && notifier.getNotifyUnstable())) {
-            getSlack(r).publish(getBuildStatusMessage(r, notifier.includeTestSummary(),
-                    notifier.includeFailedTests(), notifier.includeCustomMessage()), getBuildColor(r));
-            if (notifier.getCommitInfoChoice().showAnything()) {
+                    && slackNotifierConfigJob.isNotifyBackToNormal())
+                || (result == Result.SUCCESS && slackNotifierConfigJob.isNotifySuccess())
+                || (result == Result.UNSTABLE && slackNotifierConfigJob.isNotifyUnstable())) {
+            getSlack(r).publish(getBuildStatusMessage(r, slackNotifierConfigJob.isIncludeTestSummary(),
+                    slackNotifierConfigJob.isIncludeFailedTests(), slackNotifierConfigJob.isIncludeCustomMessage()), getBuildColor(r));
+            if (slackNotifierConfigJob.getCommitInfoChoice().showAnything()) {
                 getSlack(r).publish(getCommitList(r), getBuildColor(r));
             }
         }
@@ -191,7 +193,7 @@ public class ActiveNotifier implements FineGrainedNotifier {
         for (Entry entry : entries) {
             authors.add(entry.getAuthor().getDisplayName());
         }
-        MessageBuilder message = new MessageBuilder(notifier, r);
+        MessageBuilder message = new MessageBuilder(slackNotifierConfigJob, r);
         message.append("Started by changes from ");
         message.append(StringUtils.join(authors, ", "));
         message.append(" (");
@@ -227,7 +229,7 @@ public class ActiveNotifier implements FineGrainedNotifier {
         Set<String> commits = new HashSet<String>();
         for (Entry entry : entries) {
             StringBuffer commit = new StringBuffer();
-            CommitInfoChoice commitInfoChoice = notifier.getCommitInfoChoice();
+            CommitInfoChoice commitInfoChoice = slackNotifierConfigJob.getCommitInfoChoice();
             if (commitInfoChoice.showTitle()) {
                 commit.append(entry.getMsg());
             }
@@ -236,7 +238,7 @@ public class ActiveNotifier implements FineGrainedNotifier {
             }
             commits.add(commit.toString());
         }
-        MessageBuilder message = new MessageBuilder(notifier, r);
+        MessageBuilder message = new MessageBuilder(slackNotifierConfigJob, r);
         message.append("Changes:\n- ");
         message.append(StringUtils.join(commits, "\n- "));
         return message.toString();
@@ -254,7 +256,7 @@ public class ActiveNotifier implements FineGrainedNotifier {
     }
 
     String getBuildStatusMessage(AbstractBuild r, boolean includeTestSummary, boolean includeFailedTests, boolean includeCustomMessage) {
-        MessageBuilder message = new MessageBuilder(notifier, r);
+        MessageBuilder message = new MessageBuilder(slackNotifierConfigJob, r);
         message.appendStatusMessage();
         message.appendDuration();
         message.appendOpenLink();
@@ -286,11 +288,11 @@ public class ActiveNotifier implements FineGrainedNotifier {
                                     UNKNOWN_STATUS_MESSAGE = "Unknown";
         
         private StringBuffer message;
-        private SlackNotifier notifier;
+        private SlackNotifierConfigJob slackNotifierConfigJob;
         private AbstractBuild build;
 
-        public MessageBuilder(SlackNotifier notifier, AbstractBuild build) {
-            this.notifier = notifier;
+        public MessageBuilder(SlackNotifierConfigJob slackNotifierConfigJob, AbstractBuild build) {
+            this.slackNotifierConfigJob = slackNotifierConfigJob;
             this.message = new StringBuffer();
             this.build = build;
             startMessage();
@@ -338,7 +340,7 @@ public class ActiveNotifier implements FineGrainedNotifier {
              */
             if (result == Result.SUCCESS
                     && (previousResult == Result.FAILURE || previousResult == Result.UNSTABLE) 
-                    && buildHasSucceededBefore && notifier.getNotifyBackToNormal()) {
+                    && buildHasSucceededBefore && slackNotifierConfigJob.isNotifyBackToNormal()) {
                 return BACK_TO_NORMAL_STATUS_MESSAGE;
             }
             if (result == Result.FAILURE && previousResult == Result.FAILURE) {
@@ -433,7 +435,7 @@ public class ActiveNotifier implements FineGrainedNotifier {
         }
 
         public MessageBuilder appendCustomMessage() {
-            String customMessage = notifier.getCustomMessage();
+            String customMessage = slackNotifierConfigJob.getCustomMessage();
             EnvVars envVars = new EnvVars();
             try {
                 envVars = build.getEnvironment(new LogTaskListener(logger, INFO));
