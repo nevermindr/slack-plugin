@@ -43,7 +43,7 @@ public class BackwordsCompatible_1_8_SlackNotifierTest {
         SlackNotifierConfigJob slackNotifierConfigJob = notifier.getSlackNotifierConfigJob();
 
         assertEquals("jenkins-slack-plugin", slackNotifierConfigJob.getTeamDomain());
-        assertEquals("auth-token-for-test", slackNotifierConfigJob.getAuthToken());
+        assertEquals("auth-token-for-test", slackNotifierConfigJob.getToken());
         assertEquals(false, slackNotifierConfigJob.isBotUser());
         assertEquals("#slack-plugin-testing", slackNotifierConfigJob.getRoom());
 
@@ -72,7 +72,7 @@ public class BackwordsCompatible_1_8_SlackNotifierTest {
         SlackNotifierConfigJob slackNotifierConfigJob = notifier.getSlackNotifierConfigJob();
 
         assertEquals("jenkins-slack-plugin", slackNotifierConfigJob.getTeamDomain());
-        assertEquals("auth-token-for-test", slackNotifierConfigJob.getAuthToken());
+        assertEquals("auth-token-for-test", slackNotifierConfigJob.getToken());
         assertEquals(false, slackNotifierConfigJob.isBotUser());
         assertEquals("#slack-plugin-testing", slackNotifierConfigJob.getRoom());
 
@@ -101,7 +101,7 @@ public class BackwordsCompatible_1_8_SlackNotifierTest {
         SlackNotifierConfigJob slackNotifierConfigJob = notifier.getSlackNotifierConfigJob();
 
         assertEquals("", slackNotifierConfigJob.getTeamDomain());
-        assertEquals("", slackNotifierConfigJob.getAuthToken());
+        assertEquals("", slackNotifierConfigJob.getToken());
         assertEquals(false, slackNotifierConfigJob.isBotUser());
         assertEquals("", slackNotifierConfigJob.getRoom());
 
@@ -160,7 +160,7 @@ public class BackwordsCompatible_1_8_SlackNotifierTest {
 
 
         assertEquals("", slackNotifierConfigJob.getTeamDomain());
-        assertEquals("", slackNotifierConfigJob.getAuthToken());
+        assertEquals("", slackNotifierConfigJob.getToken());
         assertEquals(false, slackNotifierConfigJob.isBotUser());
         assertEquals("", slackNotifierConfigJob.getRoom());
 

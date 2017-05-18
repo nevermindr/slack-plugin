@@ -15,10 +15,14 @@ import org.apache.commons.lang.StringUtils;
 
 /**
  * Configuration migrator for migrating the Slack plugin configuration for a
- * {@link AbstractProject} from the 1.8 format to the 2.0 format. It does so by
- * removing the SlackJobProperty from the job properties (if there is one) and
- * moving the Slack notification settings to a {@link SlackNotifier} in the list
+ * {@link AbstractProject} from the 1.8 format to the 2.3 format.
+ *
+ * For 1.8: removes the SlackJobProperty from the job properties (if there is one) and
+ * moves the Slack notification settings to a {@link SlackNotifier} in the list
  * of publishers (if there is one).
+ *
+ * For 2.2: renames `authToken` and `authTokenCredentialId` fields to
+ * `token` and `tokenCredentialId` respectively.
  */
 @SuppressWarnings("deprecation")
 public class AbstractProjectConfigMigrator {
@@ -32,36 +36,66 @@ public class AbstractProjectConfigMigrator {
                 project.getClass().getName()));
 
         final SlackJobProperty slackJobProperty = project.getProperty(SlackJobProperty.class);
+        SlackNotifier slackNotifier = project.getPublishersList().get(SlackNotifier.class);
 
+
+
+        try {
+            migrate1_8to2_0(project, slackJobProperty, slackNotifier);
+            migrate2_2to2_3(project, slackNotifier);
+
+
+            // property section is not used anymore - remove
+            project.save();
+            logger.info("Configuration saved successfully");
+        } catch (IOException e) {
+            logger.log(Level.SEVERE, e.getMessage(), e);
+        }
+    }
+
+    private void migrate2_2to2_3(AbstractProject<?, ?> project, SlackNotifier slackNotifier) {
+        if (slackNotifier == null) {
+            logger.info(String.format(
+                    "Configuration does not have a notifier for \"%s\", not migrating settings",
+                    project.getName()));
+        } else {
+            if (StringUtils.isBlank(slackNotifier.getSlackNotifierConfigJob().getToken())) {
+                slackNotifier.getSlackNotifierConfigJob().setToken(slackNotifier.getSlackNotifierConfigJob().getAuthToken());
+                slackNotifier.getSlackNotifierConfigJob().setAuthToken(null);
+            }
+
+            if (StringUtils.isBlank(slackNotifier.getSlackNotifierConfigJob().getTokenCredentialId())) {
+                slackNotifier.getSlackNotifierConfigJob().setTokenCredentialId(slackNotifier.getSlackNotifierConfigJob().getAuthTokenCredentialId());
+                slackNotifier.getSlackNotifierConfigJob().setAuthTokenCredentialId(null);
+            }
+            logger.info("Configuration updated successfully");
+        }
+    }
+
+    private void migrate1_8to2_0(AbstractProject<?, ?> project, SlackJobProperty slackJobProperty, SlackNotifier slackNotifier) throws IOException {
         if (slackJobProperty == null) {
             logger.finest(String.format(
-                    "Configuration is already up to date for \"%s\", skipping migration",
+                    "Configuration is already up to date for \"%s\", skipping 1.8 migration",
                     project.getName()));
             return;
         }
-
-        SlackNotifier slackNotifier = project.getPublishersList().get(SlackNotifier.class);
 
         if (slackNotifier == null) {
             logger.info(String.format(
                     "Configuration does not have a notifier for \"%s\", not migrating settings",
                     project.getName()));
         } else {
-            updateSlackNotifier(slackNotifier, slackJobProperty);
+            updateSlackNotifierfromSlackJobProperty(slackNotifier, slackJobProperty);
+            logger.info("Configuration updated successfully");
+
         }
 
-        try {
-            // property section is not used anymore - remove
-            project.removeProperty(SlackJobProperty.class);
-            project.save();
-            logger.info("Configuration updated successfully");
-        } catch (IOException e) {
-            logger.log(Level.SEVERE, e.getMessage(), e);
-        }
+        project.removeProperty(SlackJobProperty.class);
+        logger.info("Removed SlackJobProperty section");
     }
 
-    private void updateSlackNotifier(final SlackNotifier slackNotifier,
-                                     final SlackJobProperty slackJobProperty) {
+    private void updateSlackNotifierfromSlackJobProperty(final SlackNotifier slackNotifier,
+                                                         final SlackJobProperty slackJobProperty) {
 
         SlackNotifierConfigJob slackNotifierConfigJob = slackNotifier.getSlackNotifierConfigJob();
         

@@ -26,9 +26,7 @@ public class SlackNotifierConfigJob extends SlackNotifierConfigGlobal {
     private boolean includeCustomMessage;
     private String customMessage;
 
-    //FIXME: migration should be implemented to convert authToken => token
     protected String token;
-
     protected String tokenCredentialId;
 
     //this fields are here to support 1.8-2.x migration
@@ -64,7 +62,6 @@ public class SlackNotifierConfigJob extends SlackNotifierConfigGlobal {
     public String getAuthToken() {
         return authToken;
     }
-
     @Deprecated
     public String getAuthTokenCredentialId() {
         return authTokenCredentialId;
@@ -80,7 +77,6 @@ public class SlackNotifierConfigJob extends SlackNotifierConfigGlobal {
 
 
     public String getToken() {
-
         return this.token;
     }
 
