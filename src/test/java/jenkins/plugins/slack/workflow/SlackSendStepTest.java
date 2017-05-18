@@ -4,6 +4,7 @@ import hudson.model.TaskListener;
 import jenkins.model.Jenkins;
 import jenkins.plugins.slack.Messages;
 import jenkins.plugins.slack.SlackNotifier;
+import jenkins.plugins.slack.SlackNotifierConfigGlobal;
 import jenkins.plugins.slack.SlackService;
 import org.jenkinsci.plugins.workflow.steps.StepContext;
 import org.junit.Before;
@@ -43,11 +44,15 @@ public class SlackSendStepTest {
     Jenkins jenkins;
     @Mock
     SlackNotifier.DescriptorImpl slackDescMock;
+    @Mock
+    SlackNotifierConfigGlobal slackNotifierConfigGlobalMock;
 
     @Before
     public void setUp() {
         PowerMockito.mockStatic(Jenkins.class);
         when(jenkins.getDescriptorByType(SlackNotifier.DescriptorImpl.class)).thenReturn(slackDescMock);
+        when(slackDescMock.getSlackNotifierConfigGlobal()).thenReturn(slackNotifierConfigGlobalMock);
+
     }
 
     @Test
@@ -67,8 +72,8 @@ public class SlackSendStepTest {
 
         stepExecution.listener = taskListenerMock;
 
-        when(slackDescMock.getToken()).thenReturn("differentToken");
-        when(slackDescMock.getBotUser()).thenReturn(true);
+        when(slackNotifierConfigGlobalMock.getToken()).thenReturn("differentToken");
+        when(slackNotifierConfigGlobalMock.isBotUser()).thenReturn(true);
 
         when(taskListenerMock.getLogger()).thenReturn(printStreamMock);
         doNothing().when(printStreamMock).println();
@@ -99,8 +104,8 @@ public class SlackSendStepTest {
 
         stepExecution.listener = taskListenerMock;
 
-        when(slackDescMock.getToken()).thenReturn("differentToken");
-        when(slackDescMock.getBotUser()).thenReturn(true);
+        when(slackNotifierConfigGlobalMock.getToken()).thenReturn("differentToken");
+        when(slackNotifierConfigGlobalMock.isBotUser()).thenReturn(true);
 
         when(taskListenerMock.getLogger()).thenReturn(printStreamMock);
         doNothing().when(printStreamMock).println();
@@ -124,12 +129,12 @@ public class SlackSendStepTest {
 
         stepExecution.listener = taskListenerMock;
 
-        when(slackDescMock.getBaseUrl()).thenReturn("globalBaseUrl");
-        when(slackDescMock.getTeamDomain()).thenReturn("globalTeamDomain");
-        when(slackDescMock.getToken()).thenReturn("globalToken");
-        when(slackDescMock.getTokenCredentialId()).thenReturn("globalTokenCredentialId");
-        when(slackDescMock.getBotUser()).thenReturn(false);
-        when(slackDescMock.getRoom()).thenReturn("globalChannel");
+        when(slackNotifierConfigGlobalMock.getBaseUrl()).thenReturn("globalBaseUrl");
+        when(slackNotifierConfigGlobalMock.getTeamDomain()).thenReturn("globalTeamDomain");
+        when(slackNotifierConfigGlobalMock.getToken()).thenReturn("globalToken");
+        when(slackNotifierConfigGlobalMock.getTokenCredentialId()).thenReturn("globalTokenCredentialId");
+        when(slackNotifierConfigGlobalMock.isBotUser()).thenReturn(false);
+        when(slackNotifierConfigGlobalMock.getRoom()).thenReturn("globalChannel");
 
         when(taskListenerMock.getLogger()).thenReturn(printStreamMock);
         doNothing().when(printStreamMock).println();

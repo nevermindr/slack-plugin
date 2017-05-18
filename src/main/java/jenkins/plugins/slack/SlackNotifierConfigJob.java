@@ -27,9 +27,6 @@ public class SlackNotifierConfigJob extends SlackNotifierConfigGlobal {
     private boolean includeCustomMessage;
     private String customMessage;
 
-    protected String token;
-    protected String tokenCredentialId;
-
     //this fields are here to support 1.8-2.x migration
     @Deprecated
     private String authToken;

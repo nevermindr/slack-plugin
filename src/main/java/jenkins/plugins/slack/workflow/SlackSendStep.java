@@ -189,20 +189,21 @@ public class SlackSendStep extends AbstractStepImpl {
                 return null;
             }
             SlackNotifier.DescriptorImpl slackDesc = jenkins.getDescriptorByType(SlackNotifier.DescriptorImpl.class);
-            listener.getLogger().println("run slackstepsend, step " + step.token+":" + step.botUser+", desc " + slackDesc.getToken()+":"+slackDesc.getBotUser());
-            String baseUrl = step.baseUrl != null ? step.baseUrl : slackDesc.getBaseUrl();
-            String team = step.teamDomain != null ? step.teamDomain : slackDesc.getTeamDomain();
-            String tokenCredentialId = step.tokenCredentialId != null ? step.tokenCredentialId : slackDesc.getTokenCredentialId();
+            SlackNotifierConfigGlobal slackNotifierConfigGlobal = slackDesc.getSlackNotifierConfigGlobal();
+            listener.getLogger().println("run slackstepsend, step " + step.token+":" + step.botUser+", desc " + slackNotifierConfigGlobal.getToken()+":"+slackNotifierConfigGlobal.isBotUser());
+            String baseUrl = step.baseUrl != null ? step.baseUrl : slackNotifierConfigGlobal.getBaseUrl();
+            String team = step.teamDomain != null ? step.teamDomain : slackNotifierConfigGlobal.getTeamDomain();
+            String tokenCredentialId = step.tokenCredentialId != null ? step.tokenCredentialId : slackNotifierConfigGlobal.getTokenCredentialId();
             String token;
             boolean botUser;
             if (step.token != null) {
                 token = step.token;
                 botUser = step.botUser;
             } else {
-                token = slackDesc.getToken();
-                botUser = slackDesc.getBotUser();
+                token = slackNotifierConfigGlobal.getToken();
+                botUser = slackNotifierConfigGlobal.isBotUser();
             }
-            String channel = step.channel != null ? step.channel : slackDesc.getRoom();
+            String channel = step.channel != null ? step.channel : slackNotifierConfigGlobal.getRoom();
             String color = step.color != null ? step.color : "";
 
             //placing in console log to simplify testing of retrieving values from global config or from step field; also used for tests

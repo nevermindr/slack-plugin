@@ -8,6 +8,7 @@ import com.thoughtworks.xstream.converters.reflection.ReflectionProvider;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.mapper.Mapper;
+import hudson.EnvVars;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.logging.Logger;
@@ -68,6 +69,38 @@ public class SlackNotifierConfigGlobal {
             this.baseUrl += "/";
         }
         this.roomIds = room!=null?room.split("[,; ]+"):new String[]{};
+    }
+
+    public void copyIfEmpty(SlackNotifierConfigGlobal slackNotifierConfigGlobal) {
+        if (StringUtils.isEmpty(teamDomain)) {
+            teamDomain = slackNotifierConfigGlobal.getTeamDomain();
+        }
+
+        if (StringUtils.isEmpty(baseUrl)) {
+            baseUrl = slackNotifierConfigGlobal.getBaseUrl();
+        }
+
+        if (StringUtils.isEmpty(token)) {
+            token = slackNotifierConfigGlobal.getToken();
+            botUser = slackNotifierConfigGlobal.isBotUser();
+        }
+
+        if (StringUtils.isEmpty(tokenCredentialId)) {
+            tokenCredentialId = slackNotifierConfigGlobal.getTokenCredentialId();
+        }
+
+        if (StringUtils.isEmpty(room)) {
+            room = slackNotifierConfigGlobal.getRoom();
+        }
+    }
+
+    public void copyFromEnvironment(EnvVars env) {
+        baseUrl = env.expand(baseUrl);
+        teamDomain = env.expand(teamDomain);
+        //FIXME: get both for compatibility
+//        token = env.expand(authToken);
+//        tokenCredentialId = env.expand(authTokenCredentialId);
+        room = env.expand(room);
     }
 
     public String getBaseUrl() {

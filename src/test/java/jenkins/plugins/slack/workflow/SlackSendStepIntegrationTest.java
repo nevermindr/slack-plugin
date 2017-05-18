@@ -10,6 +10,7 @@ import org.jenkinsci.plugins.workflow.steps.StepConfigTester;
 import org.junit.Rule;
 import org.junit.Test;
 import org.jvnet.hudson.test.JenkinsRule;
+import org.jvnet.hudson.test.recipes.LocalData;
 
 public class SlackSendStepIntegrationTest {
     @Rule
@@ -31,6 +32,7 @@ public class SlackSendStepIntegrationTest {
     }
 
     @Test
+    @LocalData
     public void test_global_config_override() throws Exception {
         WorkflowJob job = jenkinsRule.jenkins.createProject(WorkflowJob.class, "workflow");
         //just define message
@@ -41,6 +43,7 @@ public class SlackSendStepIntegrationTest {
     }
 
     @Test
+    @LocalData
     public void test_fail_on_error() throws Exception {
         WorkflowJob job = jenkinsRule.jenkins.createProject(WorkflowJob.class, "workflow");
         //just define message
