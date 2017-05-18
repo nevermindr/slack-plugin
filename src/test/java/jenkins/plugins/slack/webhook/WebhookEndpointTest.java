@@ -5,8 +5,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.Before;
 
-import static org.junit.Assert.assertEquals;
-
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
@@ -19,9 +17,6 @@ import com.gargoylesoftware.htmlunit.WebRequestSettings;
 import static com.gargoylesoftware.htmlunit.HttpMethod.POST;
 
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
-import com.gargoylesoftware.htmlunit.html.HtmlInput;
-
-import hudson.tasks.Shell;
 
 import org.jvnet.hudson.test.JenkinsRule;
 
@@ -39,10 +34,7 @@ import hudson.model.FreeStyleProject;
 import jenkins.model.GlobalConfiguration;
 
 import jenkins.plugins.slack.webhook.model.SlackTextMessage;
-
-import jenkins.plugins.slack.webhook.WebhookEndpoint;
-
-
+import org.jvnet.hudson.test.recipes.LocalData;
 
 
 public class WebhookEndpointTest {
@@ -82,9 +74,11 @@ public class WebhookEndpointTest {
     }
 
     @Test
+    @LocalData
     public void testUnconfiguredSlackToken() throws Exception {
         HtmlForm form = jenkinsRule.createWebClient().goTo("configure").getFormByName("config");
         form.getInputByName("_.slackOutgoingWebhookURL").setValueAttribute(URL);
+
         jenkinsRule.submit(form);
 
         WebResponse response = makeRequest(null);
@@ -93,7 +87,9 @@ public class WebhookEndpointTest {
         assertThat(getSlackMessage(response).getText(), is("Slack token not set"));
     }
 
+
     @Test
+    @LocalData
     public void testNoTextPostData() throws Exception {
         setConfigSettings();
         List<NameValuePair> goodToken = new ArrayList<NameValuePair>();
@@ -104,6 +100,7 @@ public class WebhookEndpointTest {
     } 
 
     @Test
+    @LocalData
     public void testNoTriggerWordPostData() throws Exception {
         setConfigSettings();
         List<NameValuePair> goodToken = new ArrayList<NameValuePair>();
@@ -115,6 +112,7 @@ public class WebhookEndpointTest {
     }
 
     @Test
+    @LocalData
     public void testInvalidConfiguredSlackToken() throws Exception {
         GlobalConfig config = GlobalConfiguration.all().get(GlobalConfig.class);        
         assertThat(config.getSlackOutgoingWebhookToken(), is(nullValue()));
@@ -130,6 +128,7 @@ public class WebhookEndpointTest {
     }
 
     @Test
+    @LocalData
     public void testInvalidTriggerWord() throws Exception {
         setConfigSettings();
         data.add(new NameValuePair("text", "jenkinns list projects"));
@@ -138,6 +137,7 @@ public class WebhookEndpointTest {
     }
 
     @Test
+    @LocalData
     public void testListProjects() throws Exception {
         setConfigSettings(); 
         data.add(new NameValuePair("text", "jenkins list projects")); 
@@ -154,6 +154,7 @@ public class WebhookEndpointTest {
     }
 
     @Test
+    @LocalData
     public void testRunNonExistantProject() throws Exception {
         setConfigSettings();
         data.add(new NameValuePair("text", "jenkins run project-1"));
@@ -162,6 +163,7 @@ public class WebhookEndpointTest {
     }
 
     @Test
+    @LocalData
     public void testRunProject() throws Exception {
         setConfigSettings();
         FreeStyleProject project = jenkinsRule.createFreeStyleProject(LONG_PROJECT_NAME);
@@ -171,6 +173,7 @@ public class WebhookEndpointTest {
     }
 
     @Test
+    @LocalData
     public void testGetProjectBuildLogWithNonExistantProject() throws Exception {
         setConfigSettings();
         data.add(new NameValuePair("text", "jenkins get project_1 #1 log"));
@@ -179,6 +182,7 @@ public class WebhookEndpointTest {
     }
 
     @Test
+    @LocalData
     public void testGetProjectBuildLog() throws Exception {
         setConfigSettings();
         FreeStyleProject project = jenkinsRule.createFreeStyleProject(LONG_PROJECT_NAME);

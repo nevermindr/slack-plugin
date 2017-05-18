@@ -52,19 +52,22 @@ public class SlackNotifierConfigGlobal {
     }
 
     public SlackNotifierConfigGlobal(String baseUrl, String teamDomain, String token, String tokenCredentialId, boolean botUser, String room, String sendAs) {
-
-        if(baseUrl != null && !baseUrl.isEmpty() && !baseUrl.endsWith("/")) {
-            baseUrl += "/";
-        }
-
         this.baseUrl = baseUrl;
         this.teamDomain = teamDomain;
         this.token = token;
         this.tokenCredentialId = StringUtils.trim(tokenCredentialId);
         this.botUser = botUser;
         this.room = room;
-        this.roomIds = room!=null?room.split("[,; ]+"):new String[]{};
         this.sendAs = sendAs;
+
+        this.checkData();
+    }
+
+    public void checkData() {
+        if(this.baseUrl != null && !this.baseUrl.isEmpty() && !this.baseUrl.endsWith("/")) {
+            this.baseUrl += "/";
+        }
+        this.roomIds = room!=null?room.split("[,; ]+"):new String[]{};
     }
 
     public String getBaseUrl() {

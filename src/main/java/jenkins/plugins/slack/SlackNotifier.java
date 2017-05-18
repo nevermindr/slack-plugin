@@ -334,8 +334,6 @@ public class SlackNotifier extends Notifier {
             this.slackNotifierConfigGlobal = slackNotifierConfigGlobal;
         }
 
-        public static final CommitInfoChoice[] COMMIT_INFO_CHOICES = CommitInfoChoice.values();
-
         public DescriptorImpl() {
             load();
         }
@@ -368,6 +366,15 @@ public class SlackNotifier extends Notifier {
             return slackNotifierConfigGlobal!=null?slackNotifierConfigGlobal.getSendAs():null;
         }
 
+        public ListBoxModel doFillCommitInfoChoiceItems() {
+            ListBoxModel listBoxModel =  new StandardListBoxModel();
+            for (CommitInfoChoice commitInfoChoice : CommitInfoChoice.values()) {
+                listBoxModel.add(commitInfoChoice.getDisplayName(), commitInfoChoice.name());
+                logger.info(String.format("%s - %s - %s", commitInfoChoice.getDisplayName(), commitInfoChoice.name(), commitInfoChoice));
+            }
+            return listBoxModel;
+        }
+
         public ListBoxModel doFillTokenCredentialIdItems() {
             if (!Jenkins.getInstance().hasPermission(Jenkins.ADMINISTER)) {
                 return new ListBoxModel();
@@ -394,47 +401,27 @@ public class SlackNotifier extends Notifier {
 
         @Override
         public SlackNotifier newInstance(StaplerRequest sr, JSONObject json) {
-            String baseUrl = sr.getParameter("slackBaseUrl");
-            if(baseUrl != null && !baseUrl.isEmpty() && ! baseUrl.endsWith("/")) {
-                baseUrl += "/";
-            }
-            String teamDomain = sr.getParameter("slackTeamDomain");
-            String token = sr.getParameter("slackToken");
-            String tokenCredentialId = json.getString("tokenCredentialId");
-            boolean botUser = "true".equals(sr.getParameter("slackBotUser"));
-            String room = sr.getParameter("slackRoom");
-            boolean startNotification = "true".equals(sr.getParameter("slackStartNotification"));
-            boolean notifySuccess = "true".equals(sr.getParameter("slackNotifySuccess"));
-            boolean notifyAborted = "true".equals(sr.getParameter("slackNotifyAborted"));
-            boolean notifyNotBuilt = "true".equals(sr.getParameter("slackNotifyNotBuilt"));
-            boolean notifyUnstable = "true".equals(sr.getParameter("slackNotifyUnstable"));
-            boolean notifyRegression = "true".equals(sr.getParameter("slackNotifyRegression"));
-            boolean notifyFailure = "true".equals(sr.getParameter("slackNotifyFailure"));
-            boolean notifyBackToNormal = "true".equals(sr.getParameter("slackNotifyBackToNormal"));
-            boolean notifyRepeatedFailure = "true".equals(sr.getParameter("slackNotifyRepeatedFailure"));
-            boolean includeTestSummary = "true".equals(sr.getParameter("includeTestSummary"));
-            boolean includeFailedTests = "true".equals(sr.getParameter("includeFailedTests"));
-            CommitInfoChoice commitInfoChoice = CommitInfoChoice.forDisplayName(sr.getParameter("slackCommitInfoChoice"));
-            boolean includeCustomMessage = "on".equals(sr.getParameter("includeCustomMessage"));
-            String customMessage = sr.getParameter("customMessage");
+            logger.finer("json: " + json.toString());
 
-            return new SlackNotifier(
-                    new SlackNotifierConfigJob(baseUrl, teamDomain, token, tokenCredentialId, botUser, room, this.slackNotifierConfigGlobal.getSendAs(), startNotification, notifyAborted, notifyFailure, notifyNotBuilt, notifySuccess, notifyUnstable, notifyRegression, notifyBackToNormal, notifyRepeatedFailure, includeTestSummary, includeFailedTests, commitInfoChoice, includeCustomMessage, customMessage));
+            SlackNotifierConfigJob _slackNotifierConfigJob = new SlackNotifierConfigJob();
+            sr.bindJSON(_slackNotifierConfigJob, json);
+
+            _slackNotifierConfigJob.checkData();
+
+            SlackNotifier sn = new SlackNotifier(_slackNotifierConfigJob);
+
+            return sn;
         }
 
         @Override
         public boolean configure(StaplerRequest sr, JSONObject formData) throws FormException {
-            String baseUrl = sr.getParameter("slackBaseUrl");
+            logger.finer("json: " + formData.toString());
 
-            String teamDomain = sr.getParameter("slackTeamDomain");
-            String token = sr.getParameter("slackToken");
-            String tokenCredentialId = formData.getJSONObject("slack").getString("tokenCredentialId");
-            boolean botUser = "true".equals(sr.getParameter("slackBotUser"));
-            String room = sr.getParameter("slackRoom");
+            sr.bindJSON(slackNotifierConfigGlobal, formData);
+            logger.finer("token: " + slackNotifierConfigGlobal.getToken());
 
-            String sendAs = sr.getParameter("slackSendAs");
+            slackNotifierConfigGlobal.checkData();
 
-            slackNotifierConfigGlobal = new SlackNotifierConfigGlobal(baseUrl, teamDomain, token, tokenCredentialId, botUser, room, sendAs);
             save();
             return super.configure(sr, formData);
         }

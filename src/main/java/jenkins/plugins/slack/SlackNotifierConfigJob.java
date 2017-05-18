@@ -1,5 +1,6 @@
 package jenkins.plugins.slack;
 
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.converters.reflection.ReflectionConverter;
@@ -75,7 +76,6 @@ public class SlackNotifierConfigJob extends SlackNotifierConfigGlobal {
         this.authTokenCredentialId = authTokenCredentialId;
     }
 
-
     public String getToken() {
         return this.token;
     }
@@ -84,12 +84,12 @@ public class SlackNotifierConfigJob extends SlackNotifierConfigGlobal {
         return this.tokenCredentialId;
     }
 
-    public void setToken(String authToken) {
-        this.token = authToken;
+    public void setToken(String token) {
+        this.token = token;
     }
 
-    public void setTokenCredentialId(String authTokenCredentialId) {
-        this.tokenCredentialId = authTokenCredentialId;
+    public void setTokenCredentialId(String tokenCredentialId) {
+        this.tokenCredentialId = tokenCredentialId;
     }
 
     public boolean isStartNotification() {
