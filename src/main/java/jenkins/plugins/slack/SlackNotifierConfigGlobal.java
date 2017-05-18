@@ -11,6 +11,7 @@ import com.thoughtworks.xstream.mapper.Mapper;
 import hudson.EnvVars;
 import org.apache.commons.lang.StringUtils;
 
+import java.lang.reflect.Field;
 import java.util.logging.Logger;
 
 public class SlackNotifierConfigGlobal {
@@ -65,9 +66,9 @@ public class SlackNotifierConfigGlobal {
     }
 
     public void checkData() {
-        if(this.baseUrl != null && !this.baseUrl.isEmpty() && !this.baseUrl.endsWith("/")) {
-            this.baseUrl += "/";
-        }
+        setBaseUrl(baseUrl);
+        setRoom(room);
+
         this.roomIds = room!=null?room.split("[,; ]+"):new String[]{};
     }
 
@@ -90,7 +91,7 @@ public class SlackNotifierConfigGlobal {
         }
 
         if (StringUtils.isEmpty(room)) {
-            room = slackNotifierConfigGlobal.getRoom();
+            setRoom(slackNotifierConfigGlobal.getRoom());
         }
     }
 
@@ -125,6 +126,9 @@ public class SlackNotifierConfigGlobal {
 
     public void setBaseUrl(String baseUrl) {
         this.baseUrl = baseUrl;
+        if(this.baseUrl != null && !this.baseUrl.isEmpty() && !this.baseUrl.endsWith("/")) {
+            this.baseUrl += "/";
+        }
     }
 
     public void setTeamDomain(String teamDomain) {
@@ -137,6 +141,8 @@ public class SlackNotifierConfigGlobal {
 
     public void setRoom(String room) {
         this.room = room;
+        this.roomIds = room!=null?room.split("[,; ]+"):new String[]{};
+
     }
 
     public void setRoomIds(String[] roomIds) {
@@ -202,6 +208,58 @@ public class SlackNotifierConfigGlobal {
         public boolean canConvert(Class type) {
             return type.equals(SlackNotifier.DescriptorImpl.class);
         }
+    }
+
+    public String toString() {
+        StringBuilder result = new StringBuilder();
+        String newLine = System.getProperty("line.separator");
+
+        result.append( this.getClass().getName() );
+        result.append( " Object {" );
+        result.append(newLine);
+
+        //determine fields declared in this class only (no fields of superclass)
+        Field[] fields = this.getClass().getDeclaredFields();
+
+        //print field names paired with their values
+        for ( Field field : fields  ) {
+            result.append("  ");
+            try {
+                result.append( field.getName() );
+                result.append(": ");
+                //requires access to private field:
+                result.append( field.get(this) );
+            } catch ( IllegalAccessException ex ) {
+                System.out.println(ex);
+            }
+            result.append(newLine);
+        }
+        result.append(this.getClass().getSuperclass().getName());
+        result.append( " Object {" );
+        result.append(newLine);
+
+        //determine fields declared in superclass
+        Field[] parentFields = this.getClass().getSuperclass().getDeclaredFields();
+
+        //print field names paired with their values
+        for ( Field field : parentFields  ) {
+            result.append("  ");
+            try {
+                result.append( field.getName() );
+                result.append(": ");
+                //requires access to private field:
+                result.append( field.get(this) );
+            } catch ( IllegalAccessException ex ) {
+                System.out.println(ex);
+            }
+            result.append(newLine);
+        }
+
+        result.append("}");
+
+        result.append("}");
+
+        return result.toString();
     }
 
 }

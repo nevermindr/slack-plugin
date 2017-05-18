@@ -75,7 +75,11 @@ public class SlackNotifier extends Notifier {
     }
 
     public SlackService newSlackService(AbstractBuild r, BuildListener listener) {
-        slackNotifierConfigJob.copyIfEmpty(getDescriptor().getSlackNotifierConfigGlobal());
+        logger.finest("slackNotifierConfigJob: " + slackNotifierConfigJob.toString());
+
+        SlackNotifierConfigJob config = new SlackNotifierConfigJob(slackNotifierConfigJob);
+        config.copyIfEmpty(getDescriptor().getSlackNotifierConfigGlobal());
+        logger.finest("slackNotifierConfigJob: " + config.toString());
 
         EnvVars env = null;
         try {
@@ -85,9 +89,10 @@ public class SlackNotifier extends Notifier {
             env = new EnvVars();
         }
 
-        slackNotifierConfigJob.copyFromEnvironment(env);
+        config.copyFromEnvironment(env);
+        logger.finest("slackNotifierConfigJob: " + config.toString());
 
-        return new StandardSlackService(slackNotifierConfigJob);
+        return new StandardSlackService(config);
     }
 
     @Override

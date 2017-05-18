@@ -37,6 +37,25 @@ public class SlackNotifierConfigJob extends SlackNotifierConfigGlobal {
 
     }
 
+    public SlackNotifierConfigJob(SlackNotifierConfigJob source) {
+        super(source.getBaseUrl(), source.getTeamDomain(), source.getToken(), source.getTokenCredentialId(), source.isBotUser(), source.getRoom(), source.getSendAs());
+
+        this.startNotification = source.isStartNotification();
+        this.notifyAborted = source.isNotifyAborted();
+        this.notifyFailure = source.isNotifyFailure();
+        this.notifyNotBuilt = source.isNotifyNotBuilt();
+        this.notifySuccess = source.isNotifySuccess();
+        this.notifyUnstable = source.isNotifyUnstable();
+        this.notifyRegression = source.isNotifyRegression();
+        this.notifyBackToNormal = source.isNotifyBackToNormal();
+        this.notifyRepeatedFailure = source.isNotifyRepeatedFailure();
+        this.includeTestSummary = source.isIncludeTestSummary();
+        this.includeFailedTests = source.isIncludeFailedTests();
+        this.commitInfoChoice = source.getCommitInfoChoice();
+        this.includeCustomMessage = source.isIncludeCustomMessage();
+        this.customMessage = source.getCustomMessage();
+    }
+
     public SlackNotifierConfigJob(String baseUrl, String teamDomain, String authToken, String authTokenCredentialId, boolean botUser, String room, String sendAs, boolean startNotification, boolean notifyAborted, boolean notifyFailure, boolean notifyNotBuilt, boolean notifySuccess, boolean notifyUnstable, boolean notifyRegression, boolean notifyBackToNormal, boolean notifyRepeatedFailure, boolean includeTestSummary, boolean includeFailedTests, CommitInfoChoice commitInfoChoice, boolean includeCustomMessage, String customMessage) {
         super(baseUrl, teamDomain, authToken, authTokenCredentialId, botUser, room, sendAs);
 
